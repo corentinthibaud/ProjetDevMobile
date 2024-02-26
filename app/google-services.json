@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "608706699871",
+    "firebase_url": "https://project-dev-mobile-bd6ff-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "project-dev-mobile-bd6ff",
+    "storage_bucket": "project-dev-mobile-bd6ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608706699871:android:8750849e06a2cae6dbf1ea",
+        "android_client_info": {
+          "package_name": "fr.isen.m1.devlogiciel.projetdevmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_Ob16eOR2SUM_w-PTDCFAez_1SLshVPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
