@@ -1,10 +1,13 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.model
 
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
+
 data class PisteRemonteeModel(
-    val piste: PisteModel,
-    val remontee: RemonteeModel,
-    val state: Int
-)
+    @SerializedName("piste") val piste: PisteModel,
+    @SerializedName("remontee") val remontee: RemonteeModel,
+    @SerializedName("state") val state: Int
+): Serializable
 
 data class PistesRemonteesModel(
     val pistesRemontees: List<PisteRemonteeModel>

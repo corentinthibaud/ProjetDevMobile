@@ -1,10 +1,12 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.model
 
+import com.google.gson.annotations.SerializedName
+
 data class PisteModel (
-    val name: String,
-    val color: PisteColorEnum,
-    val state: PisteStateEnum,
-    val status: Int
+    @SerializedName("name") val name: String,
+    @SerializedName("color") val color: PisteColorEnum,
+    @SerializedName("state") val state: PisteStateEnum,
+    @SerializedName("status") val status: Int
 )
 
 data class PistesModel (
