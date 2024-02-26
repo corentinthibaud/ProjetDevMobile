@@ -36,7 +36,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = "1.5.1"
 
     }
     kotlinOptions {
