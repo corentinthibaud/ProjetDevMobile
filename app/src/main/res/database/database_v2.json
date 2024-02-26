@@ -1,0 +1,473 @@
+{
+  "chat": {
+    "messages": {
+      "message": "Hello"
+    }
+  },
+  "piste": {
+    "0": {
+      "color": "RED",
+      "name": "Barrigart",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "1": {
+      "color": "GREEN",
+      "name": "Bouticari Vert",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "2": {
+      "color": "BLUE",
+      "name": "Bouticari Bleu",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "3": {
+      "color": "RED",
+      "name": "Bouticari Rouge",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "4": {
+      "color": "GREEN",
+      "name": "Jonction Basse",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "5": {
+      "color": "BLUE",
+      "name": "L'Arbre",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "6": {
+      "color": "RED",
+      "name": "L'Ecureil",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "7": {
+      "color": "BLUE",
+      "name": "L'Inglin",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "8": {
+      "color": "RED",
+      "name": "L'Ousselat",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "9": {
+      "color": "RED",
+      "name": "La Draye",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "10": {
+      "color": "BLUE",
+      "name": "La Gérabio",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "11": {
+      "color": "RED",
+      "name": "La Mandarine",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "12": {
+      "color": "GREEN",
+      "name": "La Monthéry",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "13": {
+      "color": "RED",
+      "name": "Le Chamois",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "14": {
+      "color": "GREEN",
+      "name": "Le Forest",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "15": {
+      "color": "BLUE",
+      "name": "Le Gourq",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "16": {
+      "color": "BLUE",
+      "name": "Le Grand Serre",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "17": {
+      "color": "BLACK",
+      "name": "Le Lièvre",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "18": {
+      "color": "BLACK",
+      "name": "Le Tétras",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "19": {
+      "color": "GREEN",
+      "name": "Les Bambinos",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "20": {
+      "color": "BLUE",
+      "name": "Les Casses",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "21": {
+      "color": "BLUE",
+      "name": "Les Clouzeaux",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "22": {
+      "color": "RED",
+      "name": "Les Jockeys",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "23": {
+      "color": "BLUE",
+      "name": "Les Lampions",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "24": {
+      "color": "GREEN",
+      "name": "Les Ramiers",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "25": {
+      "color": "BLUE",
+      "name": "Les Rhodos",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "26": {
+      "color": "RED",
+      "name": "Les Sagnières",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "27": {
+      "color": "RED",
+      "name": "Pré Méan",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "28": {
+      "color": "BLUE",
+      "name": "Les Ribettes",
+      "state": "UNREPORTED",
+      "status": 0
+    },
+    "29": {
+      "color": "BLUE",
+      "name": "S du Chamois",
+      "state": "UNREPORTED",
+      "status": 0
+    }
+  },
+  "piste_remontee": {
+    "0": {
+      "piste": "La Monthéry",
+      "remontee": "Troïka",
+      "state": 2
+    },
+    "1": {
+      "piste": "La Monthéry",
+      "remontee": "Torres",
+      "state": 2
+    },
+    "2": {
+      "piste": "Les Jockeys",
+      "remontee": "Burge",
+      "state": 2
+    },
+    "3": {
+      "piste": "La Monthéry",
+      "remontee": "Burge",
+      "state": 0
+    },
+    "4": {
+      "piste": "Les Jockeys",
+      "remontee": "Amoureux",
+      "state": 0
+    },
+    "5": {
+      "piste": "Les Casses",
+      "remontee": "Amoureux",
+      "state": 1
+    },
+    "6": {
+      "piste": "Le Lièvre",
+      "remontee": "Beauregard 1",
+      "state": 2
+    },
+    "7": {
+      "piste": "Les Casses",
+      "remontee": "Beauregard 1",
+      "state": 0
+    },
+    "8": {
+      "piste": "Jonction Basse",
+      "remontee": "Beauregard 1",
+      "state": 0
+    },
+    "9": {
+      "piste": "Les Lampions",
+      "remontee": "Beauregard 1",
+      "state": 1
+    },
+    "10": {
+      "piste": "Le Lièvre",
+      "remontee": "Beauregard 2",
+      "state": 0
+    },
+    "11": {
+      "piste": "Les Casses",
+      "remontee": "Beauregard 2",
+      "state": 0
+    },
+    "12": {
+      "piste": "Jonction Basse",
+      "remontee": "Beauregard 2",
+      "state": 0
+    },
+    "13": {
+      "piste": "L'Ecurueil",
+      "remontee": "Beauregard 2",
+      "state": 1
+    },
+    "14": {
+      "piste": "Le Gourq",
+      "remontee": "Beauregard 2",
+      "state": 1
+    },
+    "15": {
+      "piste": "Pré Méan",
+      "remontee": "Sainte-Marie-Madeleine",
+      "status": 0
+    },
+    "16": {
+      "piste": "L'Arbre",
+      "remontee": "Sainte-Marie-Madeleine",
+      "status": 1
+    },
+    "17": {
+      "piste": "Les Lampions",
+      "remontee": "Sainte-Marie-Madeleine",
+      "status": 1
+    },
+    "18": {
+      "piste": "Les Clouzeaux",
+      "remontee": "Cassettes",
+      "status": 0
+    },
+    "19": {
+      "piste": "La Monthéry",
+      "remontee": "Cassettes",
+      "status": 0
+    },
+    "20": {
+      "piste": "Pré Méan",
+      "remontee": "Cassettes",
+      "status": 1
+    },
+    "21": {
+      "piste": "Barrigart",
+      "remontee": "Cassettes",
+      "status": 1
+    },
+    "22": {
+      "piste": "L'Inglin",
+      "remontee": "Cassettes",
+      "status": 1
+    },
+    "23": {
+      "piste": "La Gérabio",
+      "remontee": "Cassettes",
+      "status": 1
+    },
+    "24": {
+      "piste": "Le Grand Serre",
+      "remontee": "Grand Serre",
+      "status": 0
+    },
+    "25": {
+      "piste": "La Draye",
+      "remontee": "Grand Serre",
+      "status": 2
+    },
+    "26": {
+      "piste": "Le Gérabio",
+      "remontee": "Grand Serre",
+      "status": 1
+    },
+    "27": {
+      "piste": "Le Forest",
+      "remontee": "Bouticari 1",
+      "status": 0
+    },
+    "28": {
+      "piste": "Le Forest",
+      "remontee": "Bouticari 2",
+      "status": 0
+    },
+    "29": {
+      "piste": "Le Forest",
+      "remontee": "Bouticari 3",
+      "status": 2
+    },
+    "30": {
+      "piste": "Bouticari Bleu",
+      "remontee": "Bouticari 1",
+      "status": 2
+    },
+    "31": {
+      "piste": "Bouticari Bleu",
+      "remontee": "Bouticari 2",
+      "status": 0
+    },
+    "32": {
+      "piste": "Bouticari Bleu",
+      "remontee": "Bouticari 1",
+      "status": 0
+    },
+    "33": {
+      "piste": "Bouticari Vert",
+      "remontee": "Bouticari 2",
+      "status": 1
+    },
+    "34": {
+      "piste": "L'Inglin",
+      "remontee": "Bouticari 3",
+      "status": 1
+    },
+    "35": {
+      "piste": "Bouticari Rouge",
+      "remontee": "Bouticari 3",
+      "status": 2
+    },
+    "36": {
+      "piste": "Bouticari Rouge",
+      "remontee": "Bouticari 2",
+      "status": 0
+    },
+    "37": {
+      "piste": "Bouticari Rouge",
+      "remontee": "Bouticari 1",
+      "status": 0
+    },
+    "38": {
+      "piste": "Les Sagnière",
+      "remontee": "Bouticari 1",
+      "status": 0
+    },
+    "39": {
+      "piste": "Les Sagnière",
+      "remontee": "Bouticari 2",
+      "status": 0
+    },
+    "40": {
+      "piste": "Les Sagnière",
+      "remontee": "Bouticari 3",
+      "status": 0
+    },
+    "41": {
+      "piste": "Les Rhodos",
+      "remontee": "Moulin",
+      "status": 2
+    },
+    "42": {
+      "piste": "Les Ribettes",
+      "remontee": "Moulin",
+      "status": 2
+    }
+  },
+  "remontee": {
+    "0": {
+      "name": "Amoureux",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "1": {
+      "name": "Beauregard 1",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "2": {
+      "name": "Beauregard 2",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "3": {
+      "name": "Bouticari 1",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "4": {
+      "name": "Bouticari 2",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "5": {
+      "name": "Bouticari 3",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "6": {
+      "name": "Burge",
+      "status": 0,
+      "type": "TELESIEGE"
+    },
+    "7": {
+      "name": "Cassettes",
+      "status": 0,
+      "type": "TELESIEGE"
+    },
+    "8": {
+      "name": "Grand Serre",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "9": {
+      "name": "Moulin",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "10": {
+      "name": "Sainte-Marie-Madeleine",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "11": {
+      "name": "Torres",
+      "status": 0,
+      "type": "TELESKI"
+    },
+    "12": {
+      "name": "Troïka",
+      "status": 0,
+      "type": "TELESKI"
+    }
+  }
+}
