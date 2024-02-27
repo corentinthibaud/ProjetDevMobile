@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 
 class AuthenticationActivity : AppCompatActivity() {
