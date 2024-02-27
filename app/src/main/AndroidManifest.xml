@@ -32,8 +32,7 @@
             android:name=".activity.PistesActivity"
             android:exported="false"
             android:label="@string/title_activity_pistes"
-            android:theme="@style/Theme.ProjetDevMobile">
-        </activity>
+            android:theme="@style/Theme.ProjetDevMobile"></activity>
         <activity
             android:name=".activity.AuthenticationActivity"
             android:exported="false" />
