@@ -1,7 +1,6 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -40,10 +38,8 @@ import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileT
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteStateEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
-import java.util.Random
 import androidx.compose.material3.OutlinedCard as OutlinedCard
 
 class PistesActivity : ComponentActivity() {

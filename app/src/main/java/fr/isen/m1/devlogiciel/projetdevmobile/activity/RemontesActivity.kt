@@ -35,12 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeTypeEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
-import java.util.Random
 
 class RemontesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
