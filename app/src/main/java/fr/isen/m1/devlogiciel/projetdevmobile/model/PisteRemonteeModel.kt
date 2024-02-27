@@ -6,7 +6,7 @@ import java.io.Serializable
 data class PisteRemonteeModel(
     @SerializedName("piste") val piste: PisteModel? = null,
     @SerializedName("remontee") val remontee: RemonteeModel? = null,
-    @SerializedName("state") val state: Boolean? = null
+    @SerializedName("state") val state: Int? = null
 ): Serializable
 
 data class PistesRemonteesModel(
