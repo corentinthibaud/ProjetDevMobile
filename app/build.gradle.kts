@@ -47,6 +47,7 @@ android {
 dependencies {
     implementation("com.google.firebase:firebase-common-ktx:20.4.2")
     implementation(platform("androidx.compose:compose-bom:2024.02.01"))
+    implementation("com.google.firebase:firebase-database:20.3.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.01"))
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

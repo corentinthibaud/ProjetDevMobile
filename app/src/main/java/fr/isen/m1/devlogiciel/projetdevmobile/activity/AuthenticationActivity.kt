@@ -2,15 +2,13 @@ package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import fr.isen.m1.devlogiciel.projetdevmobile.R
 
 class AuthenticationActivity : AppCompatActivity() {
     private lateinit var authFirebase : FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        authFirebase = Firebase.auth
+        authFirebase = FirebaseAuth.getInstance()
     }
 
     override fun onStart() {
