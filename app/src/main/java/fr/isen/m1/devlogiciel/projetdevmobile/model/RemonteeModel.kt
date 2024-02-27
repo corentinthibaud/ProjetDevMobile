@@ -14,6 +14,5 @@ data class RemonteesModel (
 
 enum class RemonteeTypeEnum {
     TELESKI,
-    TELESIEGE,
-    TELECABINE
+    TELESIEGE
 }
