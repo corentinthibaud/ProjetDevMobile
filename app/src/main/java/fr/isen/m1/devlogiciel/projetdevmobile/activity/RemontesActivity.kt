@@ -32,12 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteRemonteeModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteStateEnum
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesRemonteesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeTypeEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
