@@ -87,7 +87,7 @@ fun RemonteeActivityScreen() {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 60.dp, bottom = 80.dp),
+                    .padding(content),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 val tmp = remonteesModel.value
