@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,45 +66,21 @@ class RemontesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold (
-                        bottomBar = {
-                            NavBar()
-                        },
-                        topBar = {
-                            Header("Remontées")
-                        }
-                    ) { content ->
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(top = 60.dp, bottom = 80.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            items(remonteesModel.remontees) { remontee ->
-                                val icon = when (remontee.type) {
-                                    RemonteeTypeEnum.TELESKI -> R.drawable.ski_lift
-                                    RemonteeTypeEnum.TELESIEGE -> R.drawable.telesiege
-                                }
-                                CardRemontee(remontee, icon)
-                            }
-                        }
-                    }
-                    /*Column {
-                        HeaderAndNavBar()
-                        //Header("Remontées")
+                    Column {
+                        Header("Remontées")
                         LazyColumn(
                             modifier = Modifier.fillMaxSize()
                                 .padding(top = 5.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             items(remonteesModel.remontees) { remontee ->
-                                val icon = when (remontee.type) {
+                                val icon = when(remontee.type) {
                                     RemonteeTypeEnum.TELESKI -> R.drawable.ski_lift
                                     RemonteeTypeEnum.TELESIEGE -> R.drawable.telesiege
                                 }
-                                CardRemontee(remontee, icon)
-                            }
+                            CardRemontee(remontee, icon)
                         }
-                    }*/
+                    }
                 }
             }
         }
@@ -116,43 +91,44 @@ class RemontesActivity : ComponentActivity() {
 fun CardRemontee(remontee : RemonteeModel, icon: Int) {
     val context = LocalContext.current
 
-    OutlinedCard(
-        border = BorderStroke(1.dp, Color.Gray),
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .height(50.dp)
-            .padding(2.dp),
-    ) {
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ){
-            Image(painter = painterResource(
-                id = icon),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-                    .padding(start = 5.dp)
-            )
-            Text(text = remontee.name, modifier = Modifier.padding(start = 20.dp), )
-            Spacer(modifier = Modifier.weight(1f))
-            if(remontee.status) {
-                Box(
+        OutlinedCard(
+            border = BorderStroke(1.dp, Color.Gray),
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(50.dp)
+                .padding(2.dp),
+        ) {
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Image(painter = painterResource(
+                    id = icon),
+                    contentDescription = null,
                     modifier = Modifier
-                        .background(Color(0xFF1EAB05))
-                        .padding(10.dp)
-                        .fillMaxWidth(0.35f)
-                ) {
-                    Text(text = "Ouvert", color = Color.White)
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .background(Color.Red)
-                        .padding(10.dp)
-                        .fillMaxWidth(0.35f)
-                ) {
-                    Text(text = "Fermé", color = Color.White)
+                        .size(40.dp)
+                        .padding(start = 5.dp)
+                )
+                Text(text = remontee.name, modifier = Modifier.padding(start = 20.dp), )
+                Spacer(modifier = Modifier.weight(1f))
+                if(remontee.status) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF1EAB05))
+                            .padding(10.dp)
+                            .fillMaxWidth(0.35f)
+                    ) {
+                        Text(text = "Ouvert", color = Color.White)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .padding(10.dp)
+                            .fillMaxWidth(0.35f)
+                    ) {
+                        Text(text = "Fermé", color = Color.White)
+                    }
                 }
             }
         }

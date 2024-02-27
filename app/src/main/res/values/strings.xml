@@ -2,5 +2,4 @@
     <string name="app_name">ProjetDevMobile</string>
     <string name="title_activity_pistes">PistesActivity</string>
     <string name="title_activity_remontes">RemontesActivity</string>
-    <string name="title_activity_home">HomeActivity</string>
 </resources>
