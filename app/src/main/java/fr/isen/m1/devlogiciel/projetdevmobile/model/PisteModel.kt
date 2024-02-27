@@ -6,7 +6,7 @@ data class PisteModel (
     @SerializedName("name") val name: String,
     @SerializedName("color") val color: PisteColorEnum,
     @SerializedName("state") val state: PisteStateEnum,
-    @SerializedName("status") val status: Int
+    @SerializedName("status") val status: Boolean
 )
 
 data class PistesModel (

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RemonteeModel (
     @SerializedName("name") val name: String,
-    @SerializedName("status") val status: Int,
+    @SerializedName("status") val status: Boolean,
     @SerializedName("type") val type: RemonteeTypeEnum
 )
 
@@ -14,6 +14,5 @@ data class RemonteesModel (
 
 enum class RemonteeTypeEnum {
     TELESKI,
-    TELESIEGE,
-    TELECABINE
+    TELESIEGE
 }
