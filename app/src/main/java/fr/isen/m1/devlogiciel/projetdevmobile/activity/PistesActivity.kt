@@ -1,6 +1,7 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +25,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,124 +42,13 @@ import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteStateEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
+import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
 import java.util.Random
 import androidx.compose.material3.OutlinedCard as OutlinedCard
 
 class PistesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val pistesModel = PistesModel(
-            pistes = listOf(
-                PisteModel(
-                    name = "Piste A",
-                    color = PisteColorEnum.RED,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = false
-                ),
-                PisteModel(
-                    name = "Piste B",
-                    color = PisteColorEnum.BLACK,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = true
-                ),
-                PisteModel(
-                    name = "Piste C",
-                    color = PisteColorEnum.values().random(),
-                    state = PisteStateEnum.UNREPORTED,
-                    status = Random().nextBoolean()
-                ),
-                PisteModel(
-                    name = "Piste A",
-                    color = PisteColorEnum.RED,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = false
-                ),
-                PisteModel(
-                    name = "Piste B",
-                    color = PisteColorEnum.BLACK,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = true
-                ),
-                PisteModel(
-                    name = "Piste C",
-                    color = PisteColorEnum.values().random(),
-                    state = PisteStateEnum.UNREPORTED,
-                    status = Random().nextBoolean()
-                ),
-                PisteModel(
-                    name = "Piste A",
-                    color = PisteColorEnum.RED,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = false
-                ),
-                PisteModel(
-                    name = "Piste B",
-                    color = PisteColorEnum.BLACK,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = true
-                ),
-                PisteModel(
-                    name = "Piste C",
-                    color = PisteColorEnum.values().random(),
-                    state = PisteStateEnum.UNREPORTED,
-                    status = Random().nextBoolean()
-                ),
-                PisteModel(
-                    name = "Piste A",
-                    color = PisteColorEnum.RED,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = false
-                ),
-                PisteModel(
-                    name = "Piste B",
-                    color = PisteColorEnum.BLACK,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = true
-                ),
-                PisteModel(
-                    name = "Piste C",
-                    color = PisteColorEnum.values().random(),
-                    state = PisteStateEnum.UNREPORTED,
-                    status = Random().nextBoolean()
-                ),
-                PisteModel(
-                    name = "Piste A",
-                    color = PisteColorEnum.RED,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = false
-                ),
-                PisteModel(
-                    name = "Piste B",
-                    color = PisteColorEnum.BLACK,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = true
-                ),
-                PisteModel(
-                    name = "Piste C",
-                    color = PisteColorEnum.values().random(),
-                    state = PisteStateEnum.UNREPORTED,
-                    status = Random().nextBoolean()
-                ),
-                PisteModel(
-                    name = "Piste A",
-                    color = PisteColorEnum.RED,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = false
-                ),
-                PisteModel(
-                    name = "Piste B",
-                    color = PisteColorEnum.BLACK,
-                    state = PisteStateEnum.UNREPORTED,
-                    status = true
-                ),
-                PisteModel(
-                    name = "Piste C",
-                    color = PisteColorEnum.values().random(),
-                    state = PisteStateEnum.UNREPORTED,
-                    status = Random().nextBoolean()
-                )
-            )
-        )
         setContent {
             ProjetDevMobileTheme {
                 // A surface container using the 'background' color from the theme
@@ -162,48 +56,52 @@ class PistesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold (
-                        bottomBar = {
-                            NavBar()
-                        },
-                        topBar = {
-                            Header("Pistes")
+                    PistesActivityScreen()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PistesActivityScreen() {
+    val pistesModel = remember { mutableStateOf<PistesModel?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        pistesModel.value = ConnectionDatabaseSample().getPistesFromDatabase()
+        isLoading.value = false
+    }
+
+    if (isLoading.value) {
+
+    } else {
+        Scaffold (
+            bottomBar = {
+                NavBar()
+            },
+            topBar = {
+                Header("Pistes")
+            }
+        ) { content ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 60.dp, bottom = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val tmp = pistesModel.value
+                tmp?.pistes?.let {
+                    items(tmp.pistes) { piste ->
+                        val color: Color = when (piste.color) {
+                            PisteColorEnum.BLUE -> Color.Blue
+                            PisteColorEnum.GREEN -> Color(0xFF1EAB05)
+                            PisteColorEnum.RED -> Color.Red
+                            PisteColorEnum.BLACK -> Color.Black
+                            else -> Color.Transparent
                         }
-                    ) { content ->
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(top = 60.dp, bottom = 80.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(pistesModel.pistes) { piste ->
-                                val color: Color = when (piste.color) {
-                                    PisteColorEnum.BLUE -> Color.Blue
-                                    PisteColorEnum.GREEN -> Color(0xFF1EAB05)
-                                    PisteColorEnum.RED -> Color.Red
-                                    PisteColorEnum.BLACK -> Color.Black
-                                }
-                                CardPiste(piste, color)
-                            }
-                        }
+                        CardPiste(piste, color)
                     }
-                    /*Column {
-                        Header("Pistes")
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(top = 5.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(pistesModel.pistes) { piste ->
-                                val color: Color = when (piste.color) {
-                                    PisteColorEnum.BLUE -> Color.Blue
-                                    PisteColorEnum.GREEN -> Color(0xFF1EAB05)
-                                    PisteColorEnum.RED -> Color.Red
-                                    PisteColorEnum.BLACK -> Color.Black
-                                }
-                                CardPiste(piste, color)
-                            }
-                        }
-                    }*/
                 }
             }
         }
@@ -217,7 +115,7 @@ fun CardPiste(piste : PisteModel, color: Color) {
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
-            .fillMaxWidth(0.8f)
+            .fillMaxWidth(0.85f)
             .height(50.dp)
             .padding(2.dp),
     ) {
@@ -239,25 +137,27 @@ fun CardPiste(piste : PisteModel, color: Color) {
                         .size(38.dp)
                 )
             }
-            Text(text = piste.name, modifier = Modifier.padding(start = 20.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            if(piste.status) {
-                Box(
-                    modifier = Modifier
-                        .background(Color(0xFF1EAB05))
-                        .padding(10.dp)
-                        .fillMaxWidth(0.35f)
-                ) {
-                    Text(text = "Ouverte", color = Color.White)
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .background(Color.Red)
-                        .padding(10.dp)
-                        .fillMaxWidth(0.35f)
-                ) {
-                    Text(text = "Fermée", color = Color.White)
+            piste.name?.let { Text(text = it, modifier = Modifier.padding(start = 10.dp).fillMaxWidth(0.63f)) }
+            Spacer(modifier = Modifier.weight(0.2f))
+            piste.status?.let {
+                if (piste.status) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF1EAB05))
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Ouverte", color = Color.White)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Fermée", color = Color.White)
+                    }
                 }
             }
         }

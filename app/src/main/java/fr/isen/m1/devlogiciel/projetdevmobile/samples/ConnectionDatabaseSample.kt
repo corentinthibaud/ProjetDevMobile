@@ -5,31 +5,50 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
+import kotlinx.coroutines.tasks.await
 
 class ConnectionDatabaseSample {
     private val rf = Firebase.database.reference
 
-    fun getPistesFromDatabase(): PistesModel? {
+    suspend fun getPistesFromDatabase(): PistesModel? {
         Log.d("ConnectionPistesSample", "Starting getPistesFromDatabase")
-        var pistes: PistesModel? = null
-        rf.child("piste").get()
-            .addOnSuccessListener {
-                Log.d("ConnectionPistesSample","Got value ${it.value}")
-                if (it.exists()) {
-                    val pisteList = ArrayList<PisteModel>()
-                    for (piste in it.children) {
-                        val pisteItem = piste.getValue(PisteModel::class.java)
-                        Log.d("ConnectionPistesSample", pisteItem.toString())
-                        pisteItem?.let { it1 -> pisteList.add(it1) }
-                    }
-                    pistes = PistesModel(pisteList)
-                    Log.d("ConnectionPistesSample", "Size: " + pistes?.pistes?.size.toString())
+        return try {
+            val snapshot = rf.child("piste").get().await()
+            if (snapshot.exists()) {
+                val pisteList = ArrayList<PisteModel>()
+                for (piste in snapshot.children) {
+                    val pisteItem = piste.getValue(PisteModel::class.java)
+                    pisteItem?.let { pisteList.add(it) }
                 }
+                PistesModel(pisteList)
+            } else {
+                null
             }
-            .addOnFailureListener {
-                Log.e("ConnectionPistesSample","Error getting data")
+        } catch (e: Exception) {
+            Log.e("ConnectionPistesSample", "Error getting data", e)
+            null
+        }
+    }
+
+    suspend fun getRemonteeFromDatabase(): RemonteesModel? {
+        Log.d("ConnectionRemonteeSample", "Starting getRemonteeFromDatabase")
+        return try {
+            val snapshot = rf.child("remontee").get().await()
+            if (snapshot.exists()) {
+                val remonteeList = ArrayList<RemonteeModel>()
+                for (remontee in snapshot.children) {
+                    val remonteeItem = remontee.getValue(RemonteeModel::class.java)
+                    remonteeItem?.let { remonteeList.add(it) }
+                }
+                RemonteesModel(remonteeList)
+            } else {
+                null
             }
-        Log.d("ConnectionPistesSample", "Ending getPistesFromDatabase")
-        return pistes
+        } catch (e: Exception) {
+            Log.e("ConnectionRemonteeSample", "Error getting data", e)
+            null
+        }
     }
 }

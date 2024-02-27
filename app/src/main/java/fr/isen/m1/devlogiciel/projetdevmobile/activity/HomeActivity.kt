@@ -28,7 +28,7 @@ class HomeActivity : ComponentActivity() {
                             NavBar()
                         },
                         topBar = {
-                            Header("Pistes")
+                            Header("Home")
                         }
                     ) { content ->
                         Greeting3("Android")
