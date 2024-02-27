@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -104,7 +105,8 @@ class PistesActivity : ComponentActivity() {
                     name = "Piste A",
                     color = PisteColorEnum.RED,
                     state = PisteStateEnum.UNREPORTED,
-                    status = false                            ),
+                    status = false
+                ),
                 PisteModel(
                     name = "Piste B",
                     color = PisteColorEnum.BLACK,
@@ -121,7 +123,8 @@ class PistesActivity : ComponentActivity() {
                     name = "Piste A",
                     color = PisteColorEnum.RED,
                     state = PisteStateEnum.UNREPORTED,
-                    status = false                            ),
+                    status = false
+                ),
                 PisteModel(
                     name = "Piste B",
                     color = PisteColorEnum.BLACK,
@@ -138,7 +141,8 @@ class PistesActivity : ComponentActivity() {
                     name = "Piste A",
                     color = PisteColorEnum.RED,
                     state = PisteStateEnum.UNREPORTED,
-                    status = false                            ),
+                    status = false
+                ),
                 PisteModel(
                     name = "Piste B",
                     color = PisteColorEnum.BLACK,
@@ -160,9 +164,33 @@ class PistesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
+                    Scaffold (
+                        bottomBar = {
+                            NavBar()
+                        },
+                        topBar = {
+                            Header("Pistes")
+                        }
+                    ) { content ->
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                                .padding(top = 60.dp, bottom = 80.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(pistesModel.pistes) { piste ->
+                                val color: Color = when (piste.color) {
+                                    PisteColorEnum.BLUE -> Color.Blue
+                                    PisteColorEnum.GREEN -> Color(0xFF1EAB05)
+                                    PisteColorEnum.RED -> Color.Red
+                                    PisteColorEnum.BLACK -> Color.Black
+                                }
+                                CardPiste(piste, color)
+                            }
+                        }
+                    }
+                    /*Column {
                         Header("Pistes")
-                        LazyColumn (
+                        LazyColumn(
                             modifier = Modifier.fillMaxSize()
                                 .padding(top = 5.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -177,28 +205,10 @@ class PistesActivity : ComponentActivity() {
                                 CardPiste(piste, color)
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Header(text: String) {
-    val context = LocalContext.current
-    Row (
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .background(Color.LightGray),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ){
-        Text(
-            text = text,
-            fontSize = 20.sp
-            )
     }
 }
 
