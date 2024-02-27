@@ -36,7 +36,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.5.1"
 
     }
     kotlinOptions {
@@ -48,7 +48,9 @@ dependencies {
     implementation("com.google.firebase:firebase-common-ktx:20.4.2")
     implementation(platform("androidx.compose:compose-bom:2024.02.01"))
     implementation("com.google.firebase:firebase-database:20.3.0")
+    implementation("com.google.firebase:firebase-database-ktx")
     implementation("org.mockito:mockito-core:5.10.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.01"))
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -59,6 +61,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
     implementation("com.google.firebase:firebase-analytics:21.5.1")
     implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
