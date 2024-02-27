@@ -19,9 +19,11 @@ class ConnectionDatabaseSample {
             if (snapshot.exists()) {
                 val pisteList = ArrayList<PisteModel>()
                 for (piste in snapshot.children) {
+                    Log.d("ConnectionRemonteeSample", "Get value$piste")
                     val pisteItem = piste.getValue(PisteModel::class.java)
                     pisteItem?.let { pisteList.add(it) }
                 }
+                Log.d("ConnectionPistesSample", "Ending getPistesFromDatabase")
                 PistesModel(pisteList)
             } else {
                 null
@@ -39,9 +41,11 @@ class ConnectionDatabaseSample {
             if (snapshot.exists()) {
                 val remonteeList = ArrayList<RemonteeModel>()
                 for (remontee in snapshot.children) {
+                    Log.d("ConnectionRemonteeSample", "Get value$remontee")
                     val remonteeItem = remontee.getValue(RemonteeModel::class.java)
                     remonteeItem?.let { remonteeList.add(it) }
                 }
+                Log.d("ConnectionRemonteeSample", "Ending getRemonteeFromDatabase")
                 RemonteesModel(remonteeList)
             } else {
                 null
