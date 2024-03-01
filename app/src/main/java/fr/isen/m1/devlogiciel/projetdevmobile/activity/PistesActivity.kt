@@ -124,8 +124,6 @@ fun PistesActivityScreen() {
 
 @Composable
 fun CardPiste(piste : PisteModel, color: Color) {
-    val context = LocalContext.current
-
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier

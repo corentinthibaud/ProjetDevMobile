@@ -36,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeTypeEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
@@ -121,8 +120,6 @@ fun RemonteeActivityScreen() {
 
 @Composable
 fun CardRemontee(remontee : RemonteeModel, icon: Int) {
-    val context = LocalContext.current
-
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
