@@ -1,7 +1,6 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -36,17 +35,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.Firebase
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
 import androidx.compose.material3.OutlinedCard as OutlinedCard
 

@@ -1,7 +1,6 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,9 +14,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +25,6 @@ import fr.isen.m1.devlogiciel.projetdevmobile.R
 
 @Composable
 fun Header(text: String) {
-    val context = LocalContext.current
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +42,6 @@ fun Header(text: String) {
 
 @Composable
 fun NavBar(activity: String) {
-    val context = LocalContext.current
 
     val selectedActivity: ButtonNav = when(activity) {
         "Home" -> ButtonNav.Home
