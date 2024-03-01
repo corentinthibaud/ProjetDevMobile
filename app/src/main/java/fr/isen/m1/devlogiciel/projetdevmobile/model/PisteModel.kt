@@ -1,28 +1,27 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.model
 
-import com.google.firebase.database.IgnoreExtraProperties
-import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-@IgnoreExtraProperties
 data class PisteModel (
-    @SerializedName("name") val name: String? = null,
-    @SerializedName("color") val color: PisteColorEnum? = null,
-    @SerializedName("state") val state: PisteStateEnum? = null,
-    @SerializedName("status") val status: Boolean? = null
-)
+    val name: String? = null,
+    val color: PisteColorEnum? = null,
+    val state: PisteStateEnum? = null,
+    val status: Boolean? = null
+): Serializable {
+    companion object {
+        enum class PisteColorEnum (val string: String){
+            GREEN("Green"),
+            RED("Red"),
+            BLUE("Blue"),
+            BLACK("Black")
+        }
 
-@IgnoreExtraProperties
+        enum class PisteStateEnum(val string: String) {
+            UNREPORTED("Unreported")
+        }
+    }
+}
+
 data class PistesModel (
     val pistes: List<PisteModel>? = null
-)
-
-enum class PisteColorEnum {
-    GREEN,
-    RED,
-    BLUE,
-    BLACK
-}
-
-enum class PisteStateEnum {
-    UNREPORTED,
-}
+): Serializable
