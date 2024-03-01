@@ -4,31 +4,37 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.ChipColors
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RichTooltip
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.TooltipState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +50,19 @@ import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
 import kotlinx.coroutines.launch
 
 class DetailPisteActivity: AppCompatActivity() {
-   // private var piste = intent.getSerializableExtra("piste") as? PisteModel
+    // private var piste = intent.getSerializableExtra("piste") as? PisteModel
     private val piste = PisteModel("PisteTest", PisteModel.Companion.PisteColorEnum.BLUE, PisteModel.Companion.PisteStateEnum.UNREPORTED, true)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Surface {
+                val comments: List<CommentModel> = ArrayList()
+                comments.plus(CommentModel("User1", "Comment1", "PisteTest"))
+                val sheetState = rememberModalBottomSheetState()
+                var showEditionForm by remember { mutableStateOf(false) }
+                var showBottomSheet by remember { mutableStateOf(false) }
+                val scope = rememberCoroutineScope()
                 LazyColumn(
                     Modifier
                         .fillMaxHeight()
@@ -58,6 +70,12 @@ class DetailPisteActivity: AppCompatActivity() {
                     item(piste) {
                         Box(Modifier.fillMaxWidth()) {
                             Text(piste?.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
+                            IconButton(onClick = {
+                                showEditionForm = true
+                                showBottomSheet = true
+                            }, modifier = Modifier.align(Alignment.CenterEnd)) {
+                                Icon(painter = painterResource(R.drawable.baseline_create_24), contentDescription = "Edit")
+                            }
                         }
                         Row {
                             SuggestionChip(
@@ -89,14 +107,6 @@ class DetailPisteActivity: AppCompatActivity() {
                                 modifier = Modifier.padding(10.dp)
                             )
                         }
-
-                    }
-                }
-                val comments: List<CommentModel> = ArrayList()
-                val tooltipState = remember { TooltipState() }
-                val scope = rememberCoroutineScope()
-                LazyColumn(modifier = Modifier.waterfallPadding()) {
-                    item(piste) {
                         Box(Modifier.fillMaxWidth()) {
                             Text("Comments", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
                         }
@@ -112,9 +122,8 @@ class DetailPisteActivity: AppCompatActivity() {
                 ){
                     Row(modifier = Modifier.align(Alignment.BottomEnd)){
                         ExtendedFloatingActionButton(onClick = {
-                            if (!tooltipState.isVisible) {
-                                scope.launch {tooltipState.show()}
-                            }
+                            showBottomSheet = true
+                            showEditionForm = false
                         },
                             icon = {Icon(painter = painterResource(R.drawable.baseline_add_24), contentDescription = "FAB")},
                             text = {Text("Add a comment")}
@@ -125,32 +134,81 @@ class DetailPisteActivity: AppCompatActivity() {
                     .width(200.dp)
                     .padding(20.dp)
                     .background(color = MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center) {
-                    var text by remember { mutableStateOf("") }
-                    TooltipBox(positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
-                        tooltip = {
-                            RichTooltip(
-                                title = {
-                                    Text(text = "Add a comment")
-                                },
-                                text = {
-                                    TextField(value = text, onValueChange = {text = it})
-                                },
-                                action = {
-                                    Row {
-                                        TextButton(onClick = {
-                                        }) {
-                                            Text(text = "Add")
+                    if(showBottomSheet) {
+                        ModalBottomSheet(onDismissRequest = { showBottomSheet = false }, sheetState = sheetState) {
+                            Column(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
+                            ) {
+                                val ctaLabel = if(showEditionForm) {
+                                    EditionForm()
+                                    "Edit"
+                                } else {
+                                    CommentForm()
+                                    "Comment"
+                                }
+                                Row {
+                                    Button(onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                        if (!sheetState.isVisible) {
+                                            showBottomSheet = false
                                         }
-                                        TextButton(onClick = { scope.launch {tooltipState.dismiss()} }) {
-                                            Text(text = "Cancel")
+                                    } }, modifier = Modifier.padding(end = 10.dp)) {
+                                        Text(text = ctaLabel)
+                                    }
+                                    OutlinedButton(onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                        if (!sheetState.isVisible) {
+                                            showBottomSheet = false
                                         }
+                                    } }) {
+                                        Text(text = "Cancel")
                                     }
                                 }
-                            )
-                        }, state = tooltipState) {
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    @Composable
+    private fun EditionForm() {
+        var dropdownExpanded by remember { mutableStateOf(false) }
+        Text("Edition form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
+        Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            var status by remember {mutableStateOf(piste?.status ?: false)}
+            Text(text = "Status", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
+            Switch(checked = status, onCheckedChange = {status = it} )
+        }
+        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 40.dp)) {
+            var state = piste?.state ?: PisteModel.Companion.PisteStateEnum.UNREPORTED
+            Text(text = "State", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
+            Box {
+                TextField(value = state.string, onValueChange = {}, readOnly = true, trailingIcon = {
+                    IconButton(onClick = { dropdownExpanded = true }) {
+                        if(dropdownExpanded) {
+                            Icon(painter = painterResource(id = R.drawable.baseline_arrow_drop_up_24), contentDescription = "Close dropdown")
+                        } else {
+                            Icon(painter = painterResource(R.drawable.baseline_arrow_drop_down_24), contentDescription = "Dropdown")
+                        }
+                    }
+                }, modifier = Modifier.clickable(onClick = { dropdownExpanded = true }))
+                DropdownMenu(
+                    expanded = dropdownExpanded,
+                    onDismissRequest = { dropdownExpanded = false }) {
+                    PisteModel.Companion.PisteStateEnum.entries.forEach {
+                        DropdownMenuItem (text = { it.string }, onClick = { state = it })
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun CommentForm () {
+        var text by remember { mutableStateOf("") }
+        Text("Add a comment", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
+        TextField(value = text, onValueChange = {text = it}, minLines = 3, modifier = Modifier.fillMaxWidth())
     }
 }
