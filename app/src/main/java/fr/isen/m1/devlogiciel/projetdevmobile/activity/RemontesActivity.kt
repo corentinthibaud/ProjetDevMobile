@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
+import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeTypeEnum
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
@@ -60,11 +61,23 @@ class RemontesActivity : ComponentActivity() {
 
 @Composable
 fun RemonteeActivityScreen() {
+    val context = LocalContext.current
     val remonteesModel = remember { mutableStateOf<RemonteesModel?>(null) }
     val isLoading = remember { mutableStateOf(true) }
 
+    val cachesRemonteesModel = remember {  mutableStateOf<RemonteesModel?>(null)  }
+    if(cachesRemonteesModel.value == null) {
+        cachesRemonteesModel.value = ConnectionDatabaseSample().getRemonteeCache(context)
+    }
+
     LaunchedEffect(Unit) {
-        remonteesModel.value = ConnectionDatabaseSample().getRemonteeFromDatabase()
+        if(cachesRemonteesModel.value == null) {
+            remonteesModel.value = ConnectionDatabaseSample().getRemonteeFromDatabase()
+
+            remonteesModel.value?.let { ConnectionDatabaseSample().insertRemonteeCache(it, context) }
+        } else {
+            remonteesModel.value = cachesRemonteesModel.value
+        }
         isLoading.value = false
     }
 

@@ -62,11 +62,23 @@ class PistesActivity : ComponentActivity() {
 
 @Composable
 fun PistesActivityScreen() {
+    val context = LocalContext.current
     val pistesModel = remember { mutableStateOf<PistesModel?>(null) }
     val isLoading = remember { mutableStateOf(true) }
 
+    val cachesPistesModel = remember {  mutableStateOf<PistesModel?>(null)  }
+    if(cachesPistesModel.value == null) {
+        cachesPistesModel.value = ConnectionDatabaseSample().getPisteCache(context)
+    }
+
     LaunchedEffect(Unit) {
-        pistesModel.value = ConnectionDatabaseSample().getPistesFromDatabase()
+        if(cachesPistesModel.value == null) {
+            pistesModel.value = ConnectionDatabaseSample().getPistesFromDatabase()
+
+            pistesModel.value?.let { ConnectionDatabaseSample().insertPisteCache(it, context) }
+        } else {
+            pistesModel.value = cachesPistesModel.value
+        }
         isLoading.value = false
     }
 
@@ -139,7 +151,9 @@ fun CardPiste(piste : PisteModel, color: Color) {
                         .size(38.dp)
                 )
             }
-            piste.name?.let { Text(text = it, modifier = Modifier.padding(start = 10.dp).fillMaxWidth(0.63f)) }
+            piste.name?.let { Text(text = it, modifier = Modifier
+                .padding(start = 10.dp)
+                .fillMaxWidth(0.63f)) }
             Spacer(modifier = Modifier.weight(0.2f))
             piste.status?.let {
                 if (piste.status) {

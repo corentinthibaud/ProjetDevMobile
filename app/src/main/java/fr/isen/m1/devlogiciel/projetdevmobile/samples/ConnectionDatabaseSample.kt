@@ -1,13 +1,16 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.samples
 
+import android.content.Context
 import android.util.Log
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
 import kotlinx.coroutines.tasks.await
+import java.io.File
 
 class ConnectionDatabaseSample {
     private val rf = Firebase.database.reference
@@ -54,5 +57,53 @@ class ConnectionDatabaseSample {
             Log.e("ConnectionRemonteeSample", "Error getting data", e)
             null
         }
+    }
+
+    fun insertPisteCache(pistesModel: PistesModel, context: Context) {
+        val cacheFile = File(context.cacheDir, "piste.json")
+
+        if(!cacheFile.exists()) {
+            cacheFile.createNewFile()
+        }
+
+        val json = Gson().toJson(pistesModel)
+
+        cacheFile.writeText(json)
+    }
+
+    fun getPisteCache(context: Context): PistesModel? {
+        val cacheFile = File(context.cacheDir, "piste.json")
+
+        if(!cacheFile.exists()) {
+            cacheFile.createNewFile()
+        }
+
+        val jsonString = cacheFile.readText()
+
+        return Gson().fromJson(jsonString, PistesModel::class.java)
+    }
+
+    fun insertRemonteeCache(remonteesModel: RemonteesModel, context: Context) {
+        val cacheFile = File(context.cacheDir, "remontee.json")
+
+        if(!cacheFile.exists()) {
+            cacheFile.createNewFile()
+        }
+
+        val json = Gson().toJson(remonteesModel)
+
+        cacheFile.writeText(json)
+    }
+
+    fun getRemonteeCache(context: Context): RemonteesModel? {
+        val cacheFile = File(context.cacheDir, "remontee.json")
+
+        if(!cacheFile.exists()) {
+            cacheFile.createNewFile()
+        }
+
+        val jsonString = cacheFile.readText()
+
+        return Gson().fromJson(jsonString, RemonteesModel::class.java)
     }
 }
