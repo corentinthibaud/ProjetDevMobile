@@ -25,7 +25,7 @@ class HomeActivity : ComponentActivity() {
                 ) {
                     Scaffold (
                         bottomBar = {
-                            NavBar()
+                            NavBar("Home")
                         },
                         topBar = {
                             Header("Home")
