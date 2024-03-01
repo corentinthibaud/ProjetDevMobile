@@ -1,10 +1,9 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ChipColors
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -46,12 +43,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.model.CommentModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import kotlinx.coroutines.launch
 
-class DetailPisteActivity: AppCompatActivity() {
-    // private var piste = intent.getSerializableExtra("piste") as? PisteModel
-    private val piste = PisteModel("PisteTest", PisteModel.Companion.PisteColorEnum.BLUE, PisteModel.Companion.PisteStateEnum.UNREPORTED, true)
+class MountainDetailsActivity: ComponentActivity() {
+    // private var mountain = intent.getSerializableExtra("mountain") as? MountainModel
+    private val mountain = MountainModel("MountainTest", true, MountainModel.Companion.MoutainTypeEnum.TELESIEGE)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +64,9 @@ class DetailPisteActivity: AppCompatActivity() {
                     Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()) {
-                    item(piste) {
+                    item(mountain) {
                         Box(Modifier.fillMaxWidth()) {
-                            Text(piste?.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
+                            Text(mountain?.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
                             IconButton(onClick = {
                                 showEditionForm = true
                                 showBottomSheet = true
@@ -78,20 +75,15 @@ class DetailPisteActivity: AppCompatActivity() {
                             }
                         }
                         Row {
-                            SuggestionChip(
-                                label = { Text(piste?.color?.string.toString()) },
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier.padding(10.dp)
-                            )
-                            val open = if (piste?.status == true) "Open" else "Closed"
+                            val open = if (mountain?.status == true) "Open" else "Closed"
 
                             SuggestionChip(
                                 label = { Text(open) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp),
                                 colors = ChipColors(
-                                    containerColor = if (piste?.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                                    labelColor = if (piste?.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
+                                    containerColor = if (mountain?.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                                    labelColor = if (mountain?.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
                                     leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
                                     trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
                                     disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
@@ -102,7 +94,7 @@ class DetailPisteActivity: AppCompatActivity() {
 
                             )
                             SuggestionChip(
-                                label = { Text(piste?.state?.string.toString()) },
+                                label = { Text(mountain?.type?.string.toString()) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp)
                             )
@@ -173,38 +165,14 @@ class DetailPisteActivity: AppCompatActivity() {
 
     @Composable
     private fun EditionForm() {
-        var dropdownExpanded by remember { mutableStateOf(false) }
         Text("Edition form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-            var status by remember {mutableStateOf(piste?.status ?: false)}
+            var status by remember {mutableStateOf(mountain?.status ?: false)}
             Text(text = "Status", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
             Switch(checked = status, onCheckedChange = {status = it} )
         }
-        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 40.dp)) {
-            var state = piste?.state ?: PisteModel.Companion.PisteStateEnum.UNREPORTED
-            Text(text = "State", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
-            Box {
-                TextField(value = state.string, onValueChange = {}, readOnly = true, trailingIcon = {
-                    IconButton(onClick = { dropdownExpanded = true }) {
-                        if(dropdownExpanded) {
-                            Icon(painter = painterResource(id = R.drawable.baseline_arrow_drop_up_24), contentDescription = "Close dropdown")
-                        } else {
-                            Icon(painter = painterResource(R.drawable.baseline_arrow_drop_down_24), contentDescription = "Dropdown")
-                        }
-                    }
-                }, modifier = Modifier.clickable(onClick = { dropdownExpanded = true }))
-                DropdownMenu(
-                    expanded = dropdownExpanded,
-                    onDismissRequest = { dropdownExpanded = false }) {
-                    PisteModel.Companion.PisteStateEnum.entries.forEach {
-                        DropdownMenuItem (text = { it.string }, onClick = { state = it })
-                    }
-                }
-            }
-        }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CommentForm () {
         var text by remember { mutableStateOf("") }

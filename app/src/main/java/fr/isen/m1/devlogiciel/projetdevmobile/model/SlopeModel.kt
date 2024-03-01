@@ -2,26 +2,26 @@ package fr.isen.m1.devlogiciel.projetdevmobile.model
 
 import java.io.Serializable
 
-data class PisteModel (
+data class SlopeModel (
     val name: String? = null,
-    val color: PisteColorEnum? = null,
-    val state: PisteStateEnum? = null,
+    val color: SlopeColorEnum? = null,
+    val state: SlopeStateEnum? = null,
     val status: Boolean? = null
 ): Serializable {
     companion object {
-        enum class PisteColorEnum (val string: String){
+        enum class SlopeColorEnum (val string: String){
             GREEN("Green"),
             RED("Red"),
             BLUE("Blue"),
             BLACK("Black")
         }
 
-        enum class PisteStateEnum(val string: String) {
+        enum class SlopeStateEnum(val string: String) {
             UNREPORTED("Unreported")
         }
     }
 }
 
-data class PistesModel (
-    val pistes: List<PisteModel>? = null
+data class SlopesModel (
+    val pistes: List<SlopeModel>? = null
 ): Serializable
