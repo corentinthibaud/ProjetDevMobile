@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,9 +25,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -90,12 +94,29 @@ fun PistesActivityScreen() {
             CircularProgressIndicator()
         }
     } else {
+        var tmp by remember { mutableStateOf(pistesModel.value?.pistes) }
         Scaffold (
             bottomBar = {
                 NavBar("Piste")
             },
             topBar = {
-                Header("Pistes")
+                Column {
+                    Header("Pistes")
+                    SearchBar(onSearchTextChanged = { searchText ->
+                        tmp = pistesModel.value?.pistes?.filter { piste ->
+                            piste.name?.contains("^${Regex.escape(searchText)}.*".toRegex(RegexOption.IGNORE_CASE)) ?: false
+                        }
+                    })
+                    FilterStatus { status ->
+                        tmp = if(status != null) {
+                            pistesModel.value?.pistes?.filter { piste ->
+                                piste.status == status
+                            }
+                        } else {
+                            pistesModel.value?.pistes
+                        }
+                    }
+                }
             }
         ) { content ->
             LazyColumn(
@@ -104,9 +125,8 @@ fun PistesActivityScreen() {
                     .padding(content),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val tmp = pistesModel.value
-                tmp?.pistes?.let {
-                    items(tmp.pistes) { piste ->
+                tmp?.let { typeTmp ->
+                    items(typeTmp) { piste ->
                         val color: Color = when (piste.color) {
                             PisteColorEnum.BLUE -> Color.Blue
                             PisteColorEnum.GREEN -> Color(0xFF1EAB05)

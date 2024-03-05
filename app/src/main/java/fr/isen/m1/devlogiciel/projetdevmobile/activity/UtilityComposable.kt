@@ -3,17 +3,26 @@ package fr.isen.m1.devlogiciel.projetdevmobile.activity
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +46,51 @@ fun Header(text: String) {
             text = text,
             fontSize = 20.sp
         )
+    }
+}
+
+@Composable
+fun SearchBar(onSearchTextChanged: (String) -> Unit) {
+    var text by remember { mutableStateOf("") }
+    TextField(
+        value = text,
+        onValueChange = { newText ->
+            text = newText
+            onSearchTextChanged(newText)
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+    )
+}
+
+@Composable
+fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Row {
+        Text(text = "Status de la pistes :")
+        Box {
+            Button(
+                onClick = { expanded = true }) {
+            }
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.weight(0.5f)
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "All") },
+                onClick = { onStateChange(null) }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Ouverte") },
+                onClick = { onStateChange(true) }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Fermée") },
+                onClick = { onStateChange(false) }
+            )
+        }
     }
 }
 
