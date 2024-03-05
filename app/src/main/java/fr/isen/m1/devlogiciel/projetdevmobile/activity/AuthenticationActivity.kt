@@ -54,6 +54,10 @@ class AuthenticationActivity : ComponentActivity() {
                     }
                 }
             }
+        } else {
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 
@@ -62,7 +66,9 @@ class AuthenticationActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show()
-
+                    val intent = Intent(this, ChatActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
 
