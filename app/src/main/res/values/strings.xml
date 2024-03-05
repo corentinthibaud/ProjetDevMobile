@@ -3,4 +3,6 @@
     <string name="title_activity_pistes">PistesActivity</string>
     <string name="title_activity_remontes">RemontesActivity</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_authentication">AuthenticationActivity</string>
+    <string name="title_activity_chat">ChatActivity</string>
 </resources>

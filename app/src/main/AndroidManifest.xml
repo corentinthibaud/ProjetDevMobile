@@ -40,11 +40,6 @@
             android:label="@string/title_activity_pistes"
             android:theme="@style/Theme.ProjetDevMobile"/>
         <activity
-            android:name=".activity.AuthenticationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_authentication"
-            android:theme="@style/Theme.ProjetDevMobile"/>
-        <activity
             android:name=".activity.ChatActivity"
             android:exported="false"
             android:label="@string/title_activity_chat"
