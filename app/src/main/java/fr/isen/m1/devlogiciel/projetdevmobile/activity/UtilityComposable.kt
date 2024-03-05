@@ -101,6 +101,7 @@ fun NavBar(activity: String) {
         "Home" -> ButtonNav.Home
         "Piste" -> ButtonNav.Pistes
         "Remontee" -> ButtonNav.Remontees
+        "Chat" -> ButtonNav.Chat
         else -> {
             ButtonNav.Home
         }
@@ -110,6 +111,7 @@ fun NavBar(activity: String) {
         ButtonNav.Home,
         ButtonNav.Pistes,
         ButtonNav.Remontees,
+        ButtonNav.Chat
     )
 
     NavigationBar (
@@ -144,6 +146,13 @@ sealed class ButtonNav(var title: String, var icon: Int, var activity: Class<*>)
             "Remontées",
             R.drawable.telesiege,
             RemontesActivity::class.java
+        )
+
+    object Chat:
+        ButtonNav(
+            "Chat",
+            R.drawable.baseline_chat_24,
+            ChatActivity::class.java
         )
 }
 

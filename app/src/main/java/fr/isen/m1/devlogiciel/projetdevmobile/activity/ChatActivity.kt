@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
+import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 import fr.isen.m1.devlogiciel.projetdevmobile.model.ChatModel
 
 class ChatActivity: ComponentActivity() {
@@ -34,20 +36,29 @@ class ChatActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Surface {
-                ChatView()
+            ProjetDevMobileTheme {
+                Scaffold(
+                    topBar = {
+                        Header("Chat")
+                    },
+                    bottomBar = {
+                        NavBar("Chat")
+                    }
+                ) {
+                    ChatView(it)
+                }
             }
         }
     }
 
     @Composable
-    fun ChatView() {
+    fun ChatView(paddingValues: PaddingValues) {
         val message = remember { mutableStateListOf<ChatModel>() }
         if(message.size < 1) {
             message.add(ChatModel("user1", "Ceci est un message qui ce doit d'être très long avec pleins d'accents et caractères un peu bizarre afin de voir le rendu sur l'écran"))
             message.add(ChatModel("user2", "Test"))
         }
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
             if (message.size < 1) {
                 item(message) {
                     Text("No message to display")
@@ -61,7 +72,7 @@ class ChatActivity: ComponentActivity() {
                 }
             }
         }
-        Box(modifier = Modifier.run { fillMaxSize().padding(20.dp) }) {
+        Box(modifier = Modifier.run { fillMaxSize().padding(bottom = paddingValues.calculateBottomPadding()) }) {
             Row(modifier = Modifier.align(Alignment.BottomEnd)) {
                 var messageToSend by remember { mutableStateOf("") }
                 TextField(value = messageToSend, onValueChange = {messageToSend = it}, placeholder = {Text("Your message")})
