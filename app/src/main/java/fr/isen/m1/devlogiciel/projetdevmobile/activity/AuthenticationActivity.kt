@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 
 class AuthenticationActivity : ComponentActivity() {
     private lateinit var authFirebase : FirebaseAuth
@@ -45,15 +46,21 @@ class AuthenticationActivity : ComponentActivity() {
         val currentUser = authFirebase.currentUser
         if (currentUser == null) {
             setContent {
-                Surface {
-                    if(intent.getStringExtra("VIEW") == "SIGNUP") {
-                        SignupView()
-                    }
-                    else {
-                        LoginView()
+                ProjetDevMobileTheme {
+                    Surface {
+                        if(intent.getStringExtra("VIEW") == "SIGNUP") {
+                            SignupView()
+                        }
+                        else {
+                            LoginView()
+                        }
                     }
                 }
             }
+        } else {
+            val intent = Intent(this, PistesActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 
@@ -62,7 +69,9 @@ class AuthenticationActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show()
-
+                    val intent = Intent(this, ChatActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
 
