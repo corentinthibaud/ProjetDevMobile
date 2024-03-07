@@ -68,6 +68,8 @@ fun PistesActivityScreen() {
     val context = LocalContext.current
     val pistesModel = remember { mutableStateOf<PistesModel?>(null) }
     val isLoading = remember { mutableStateOf(true) }
+    val statusFilter = remember { mutableStateOf<Boolean?>(null) }
+    val colorFilter = remember { mutableStateOf<PisteColorEnum?>(null) }
 
     val cachesPistesModel = remember {  mutableStateOf<PistesModel?>(null)  }
     if(cachesPistesModel.value == null) {
@@ -99,7 +101,9 @@ fun PistesActivityScreen() {
                 NavBar("Piste")
             },
             topBar = {
-                Column {
+                Column (
+                    modifier = Modifier.padding(bottom = 5.dp)
+                ){
                     Header("Pistes")
                     SearchBar(onSearchTextChanged = { searchText ->
                         tmp = pistesModel.value?.pistes?.filter { piste ->
@@ -107,14 +111,19 @@ fun PistesActivityScreen() {
                         }
                     })
                     FilterStatus { status ->
-                        tmp = if(status != null) {
-                            pistesModel.value?.pistes?.filter { piste ->
-                                piste.status == status
-                            }
-                        } else {
-                            pistesModel.value?.pistes
+                        statusFilter.value = status
+                        tmp = pistesModel.value?.pistes?.filter { piste ->
+                            (statusFilter.value == null || piste.status == statusFilter.value) &&
+                                    (colorFilter.value == null || piste.color == colorFilter.value)
                         }
                     }
+                    FilterColor(onStateChange = { color ->
+                        colorFilter.value = color
+                        tmp = pistesModel.value?.pistes?.filter { piste ->
+                            (statusFilter.value == null || piste.status == statusFilter.value) &&
+                                    (colorFilter.value == null || piste.color == colorFilter.value)
+                        }
+                    })
                 }
             }
         ) { content ->

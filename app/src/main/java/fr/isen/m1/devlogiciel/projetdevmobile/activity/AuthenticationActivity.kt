@@ -58,7 +58,7 @@ class AuthenticationActivity : ComponentActivity() {
                 }
             }
         } else {
-            val intent = Intent(this, ChatActivity::class.java)
+            val intent = Intent(this, PistesActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }

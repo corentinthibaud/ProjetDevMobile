@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,8 +26,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,6 +66,7 @@ fun RemonteeActivityScreen() {
     val context = LocalContext.current
     val remonteesModel = remember { mutableStateOf<RemonteesModel?>(null) }
     val isLoading = remember { mutableStateOf(true) }
+    val statusFilter = remember { mutableStateOf<Boolean?>(null) }
 
     val cachesRemonteesModel = remember {  mutableStateOf<RemonteesModel?>(null)  }
     if(cachesRemonteesModel.value == null) {
@@ -88,12 +92,32 @@ fun RemonteeActivityScreen() {
             CircularProgressIndicator()
         }
     } else {
+        var tmp by remember { mutableStateOf(remonteesModel.value?.remontees) }
         Scaffold (
             bottomBar = {
                 NavBar("Remontee")
             },
             topBar = {
-                Header("Remontées")
+                Column (
+                    modifier = Modifier.padding(bottom = 5.dp)
+                ){
+                    Header("Remontées")
+                    SearchBar(onSearchTextChanged = { searchText ->
+                        tmp = remonteesModel.value?.remontees?.filter { remontee ->
+                            remontee.name?.contains("^${Regex.escape(searchText)}.*".toRegex(RegexOption.IGNORE_CASE)) ?: false
+                        }
+                    })
+                    FilterStatus { status ->
+                        statusFilter.value = status
+                        tmp = if(status != null) {
+                            remonteesModel.value?.remontees?.filter { remontee ->
+                                remontee.status == status
+                            }
+                        } else {
+                            remonteesModel.value?.remontees
+                        }
+                    }
+                }
             }
         ) { content ->
             LazyColumn(
@@ -102,9 +126,8 @@ fun RemonteeActivityScreen() {
                     .padding(content),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val tmp = remonteesModel.value
-                tmp?.remontees?.let {
-                    items(tmp.remontees) { remontee ->
+                tmp?.let { typeTmp ->
+                    items(typeTmp) { remontee ->
                         val icon = when (remontee.type) {
                             RemonteeTypeEnum.TELESKI -> R.drawable.ski_lift
                             RemonteeTypeEnum.TELESIEGE -> R.drawable.telesiege
@@ -138,7 +161,9 @@ fun CardRemontee(remontee : RemonteeModel, icon: Int) {
                     .size(40.dp)
                     .padding(start = 5.dp)
             )
-            remontee.name?.let { Text(text = remontee.name, modifier = Modifier.padding(start = 10.dp).fillMaxWidth(0.63f)) }
+            remontee.name?.let { Text(text = remontee.name, modifier = Modifier
+                .padding(start = 10.dp)
+                .fillMaxWidth(0.63f)) }
             Spacer(modifier = Modifier.weight(0.2f))
             remontee.status?.let {
                 if(remontee.status) {
