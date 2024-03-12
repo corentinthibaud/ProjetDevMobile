@@ -1,6 +1,8 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -9,10 +11,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.DropdownMenu
@@ -22,6 +26,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
+import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
 
 @Composable
 fun Header(text: String) {
@@ -235,8 +243,7 @@ fun NavBar(activity: String) {
 
     val selectedActivity: ButtonNav = when(activity) {
         "Home" -> ButtonNav.Home
-        "Piste" -> ButtonNav.Pistes
-        "Remontee" -> ButtonNav.Remontees
+        "Itinéraires" -> ButtonNav.Itinerary
         "Chat" -> ButtonNav.Chat
         else -> {
             ButtonNav.Home
@@ -245,8 +252,7 @@ fun NavBar(activity: String) {
 
     val items = listOf(
         ButtonNav.Home,
-        ButtonNav.Pistes,
-        ButtonNav.Remontees,
+        ButtonNav.Itinerary,
         ButtonNav.Chat
     )
 
@@ -270,18 +276,11 @@ sealed class ButtonNav(var title: String, var icon: Int, var activity: Class<*>)
             HomeActivity::class.java
         )
 
-    data object Pistes :
+    data object Itinerary :
         ButtonNav(
-            "Pistes",
-            R.drawable.slope_black,
-            PistesActivity::class.java
-        )
-
-    data object Remontees :
-        ButtonNav(
-            "Remontées",
-            R.drawable.telesiege,
-            RemontesActivity::class.java
+            "Itinéraires",
+            R.drawable.baseline_error_24,
+            HomeActivity::class.java
         )
 
     data object Chat:
@@ -314,4 +313,109 @@ fun RowScope.AddItem(button: ButtonNav, isSelected: Boolean) {
                     .size(30.dp)
             )
         })
+}
+
+@Composable
+fun CardPiste(piste : PisteModel, color: Color) {
+    OutlinedCard(
+        border = BorderStroke(1.dp, Color.Gray),
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .height(50.dp)
+            .padding(2.dp),
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(start = 5.dp)
+        ){
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(color)
+                    .size(42.dp)
+            ) {
+                Image(painter = painterResource(
+                    id = R.drawable.slope_white),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(38.dp)
+                )
+            }
+            piste.name?.let { Text(text = it, modifier = Modifier
+                .padding(start = 10.dp)
+                .fillMaxWidth(0.63f)) }
+            Spacer(modifier = Modifier.weight(0.2f))
+            piste.status?.let {
+                if (piste.status) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF1EAB05))
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Ouverte", color = Color.White)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Fermée", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CardRemontee(remontee : RemonteeModel, icon: Int) {
+    OutlinedCard(
+        border = BorderStroke(1.dp, Color.Gray),
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .height(50.dp)
+            .padding(2.dp),
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Image(painter = painterResource(
+                id = icon),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(start = 5.dp)
+            )
+            remontee.name?.let { Text(text = remontee.name, modifier = Modifier
+                .padding(start = 10.dp)
+                .fillMaxWidth(0.63f)) }
+            Spacer(modifier = Modifier.weight(0.2f))
+            remontee.status?.let {
+                if(remontee.status) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF1EAB05))
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Ouvert", color = Color.White)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Fermé", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
 }
