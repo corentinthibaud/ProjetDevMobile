@@ -1,10 +1,12 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,9 +45,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel.Companion.SlopeColorEnum
 
 @Composable
 fun Header(text: String) {
@@ -165,7 +167,7 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
 }
 
 @Composable
-fun FilterColor(onStateChange: (PisteColorEnum?) -> Unit) {
+fun FilterColor(onStateChange: (SlopeColorEnum?) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var text by remember {  mutableStateOf("Tous")  }
     Row (
@@ -207,28 +209,28 @@ fun FilterColor(onStateChange: (PisteColorEnum?) -> Unit) {
                     DropdownMenuItem(
                         text = { Text(text = "Bleu") },
                         onClick = {
-                            onStateChange(PisteColorEnum.BLUE)
+                            onStateChange(SlopeColorEnum.BLUE)
                             text = "Bleu"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Verte") },
                         onClick = {
-                            onStateChange(PisteColorEnum.GREEN)
+                            onStateChange(SlopeColorEnum.GREEN)
                             text = "Verte"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Rouge") },
                         onClick = {
-                            onStateChange(PisteColorEnum.RED)
+                            onStateChange(SlopeColorEnum.RED)
                             text = "Rouge"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Noire") },
                         onClick = {
-                            onStateChange(PisteColorEnum.BLACK)
+                            onStateChange(SlopeColorEnum.BLACK)
                             text = "Noire"
                         }
                     )
@@ -316,13 +318,18 @@ fun RowScope.AddItem(button: ButtonNav, isSelected: Boolean) {
 }
 
 @Composable
-fun CardPiste(piste : PisteModel, color: Color) {
+fun CardSlope(slope : SlopeModel, color: Color, context: Context) {
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(50.dp)
-            .padding(2.dp),
+            .padding(2.dp)
+            .clickable {
+                val intent = Intent(context, SlopeDetailsActivity::class.java)
+                intent.putExtra("slope", slope)
+                context.startActivity(intent)
+            },
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -342,12 +349,12 @@ fun CardPiste(piste : PisteModel, color: Color) {
                         .size(38.dp)
                 )
             }
-            piste.name?.let { Text(text = it, modifier = Modifier
+            slope.name?.let { Text(text = it, modifier = Modifier
                 .padding(start = 10.dp)
                 .fillMaxWidth(0.63f)) }
             Spacer(modifier = Modifier.weight(0.2f))
-            piste.status?.let {
-                if (piste.status) {
+            slope.status?.let {
+                if (slope.status) {
                     Box(
                         modifier = Modifier
                             .background(Color(0xFF1EAB05))
@@ -372,13 +379,18 @@ fun CardPiste(piste : PisteModel, color: Color) {
 }
 
 @Composable
-fun CardRemontee(remontee : RemonteeModel, icon: Int) {
+fun CardMountain(mountain : MountainModel, icon: Int, context: Context) {
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(50.dp)
-            .padding(2.dp),
+            .padding(2.dp)
+            .clickable {
+                val intent = Intent(context, MountainDetailsActivity::class.java)
+                intent.putExtra("mountain", mountain)
+                context.startActivity(intent)
+            },
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -391,12 +403,12 @@ fun CardRemontee(remontee : RemonteeModel, icon: Int) {
                     .size(40.dp)
                     .padding(start = 5.dp)
             )
-            remontee.name?.let { Text(text = remontee.name, modifier = Modifier
+            mountain.name?.let { Text(text = mountain.name, modifier = Modifier
                 .padding(start = 10.dp)
                 .fillMaxWidth(0.63f)) }
             Spacer(modifier = Modifier.weight(0.2f))
-            remontee.status?.let {
-                if(remontee.status) {
+            mountain.status?.let {
+                if(mountain.status) {
                     Box(
                         modifier = Modifier
                             .background(Color(0xFF1EAB05))

@@ -22,6 +22,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,17 +34,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeTypeEnum
-import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainsModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel.Companion.MountainTypeEnum
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel.Companion.SlopeColorEnum
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopesModel
 import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var selectedTabIndex by remember { mutableStateOf(0) }
+            var selectedTabIndex by remember { mutableIntStateOf(0) }
             ProjetDevMobileTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -70,12 +71,12 @@ class HomeActivity : ComponentActivity() {
                                         Tab(
                                             selected = selectedTabIndex == 0,
                                             onClick = { selectedTabIndex = 0 },
-                                            text = { Text(text = "Tab 1", color = Color.Black) },
+                                            text = { Text(text = "Pistes", color = Color.Black) },
                                         )
                                         Tab(
                                             selected = selectedTabIndex == 1,
                                             onClick = { selectedTabIndex = 1 },
-                                            text = { Text(text = "Tab 2", color = Color.Black) },
+                                            text = { Text(text = "Remontées", color = Color.Black) },
                                         )
                                     }
                                 )
@@ -84,12 +85,12 @@ class HomeActivity : ComponentActivity() {
                     ) { content ->
                         if(selectedTabIndex == 0) {
                             val context = LocalContext.current
-                            val pistesModel = remember { mutableStateOf<PistesModel?>(null) }
+                            val pistesModel = remember { mutableStateOf<SlopesModel?>(null) }
                             val isLoading = remember { mutableStateOf(true) }
                             val statusFilter = remember { mutableStateOf<Boolean?>(null) }
-                            val colorFilter = remember { mutableStateOf<PisteColorEnum?>(null) }
+                            val colorFilter = remember { mutableStateOf<SlopeColorEnum?>(null) }
 
-                            val cachesPistesModel = remember {  mutableStateOf<PistesModel?>(null)  }
+                            val cachesPistesModel = remember {  mutableStateOf<SlopesModel?>(null)  }
                             if(cachesPistesModel.value == null) {
                                 cachesPistesModel.value = ConnectionDatabaseSample().getPisteCache(context)
                             }
@@ -147,13 +148,13 @@ class HomeActivity : ComponentActivity() {
                                         tmp?.let { typeTmp ->
                                             items(typeTmp) { piste ->
                                                 val color: Color = when (piste.color) {
-                                                    PisteColorEnum.BLUE -> Color.Blue
-                                                    PisteColorEnum.GREEN -> Color(0xFF1EAB05)
-                                                    PisteColorEnum.RED -> Color.Red
-                                                    PisteColorEnum.BLACK -> Color.Black
+                                                    SlopeColorEnum.BLUE -> Color.Blue
+                                                    SlopeColorEnum.GREEN -> Color(0xFF1EAB05)
+                                                    SlopeColorEnum.RED -> Color.Red
+                                                    SlopeColorEnum.BLACK -> Color.Black
                                                     else -> Color.Transparent
                                                 }
-                                                CardPiste(piste, color)
+                                                CardSlope(piste, color, LocalContext.current)
                                             }
                                         }
                                     }
@@ -161,22 +162,22 @@ class HomeActivity : ComponentActivity() {
                             }
                         } else {
                             val context = LocalContext.current
-                            val remonteesModel = remember { mutableStateOf<RemonteesModel?>(null) }
+                            val mountainsModel = remember { mutableStateOf<MountainsModel?>(null) }
                             val isLoading = remember { mutableStateOf(true) }
                             val statusFilter = remember { mutableStateOf<Boolean?>(null) }
 
-                            val cachesRemonteesModel = remember {  mutableStateOf<RemonteesModel?>(null)  }
-                            if(cachesRemonteesModel.value == null) {
-                                cachesRemonteesModel.value = ConnectionDatabaseSample().getRemonteeCache(context)
+                            val cachesMountainsModel = remember {  mutableStateOf<MountainsModel?>(null)  }
+                            if(cachesMountainsModel.value == null) {
+                                cachesMountainsModel.value = ConnectionDatabaseSample().getRemonteeCache(context)
                             }
 
                             LaunchedEffect(Unit) {
-                                if(cachesRemonteesModel.value == null) {
-                                    remonteesModel.value = ConnectionDatabaseSample().getRemonteeFromDatabase()
+                                if(cachesMountainsModel.value == null) {
+                                    mountainsModel.value = ConnectionDatabaseSample().getRemonteeFromDatabase()
 
-                                    remonteesModel.value?.let { ConnectionDatabaseSample().insertRemonteeCache(it, context) }
+                                    mountainsModel.value?.let { ConnectionDatabaseSample().insertRemonteeCache(it, context) }
                                 } else {
-                                    remonteesModel.value = cachesRemonteesModel.value
+                                    mountainsModel.value = cachesMountainsModel.value
                                 }
                                 isLoading.value = false
                             }
@@ -189,7 +190,7 @@ class HomeActivity : ComponentActivity() {
                                     CircularProgressIndicator()
                                 }
                             } else {
-                                var tmp by remember { mutableStateOf(remonteesModel.value?.remontees) }
+                                var tmp by remember { mutableStateOf(mountainsModel.value?.remontees) }
                                 Column(
                                     modifier = Modifier.padding(content)
                                 ) {
@@ -197,8 +198,8 @@ class HomeActivity : ComponentActivity() {
                                         modifier = Modifier.padding(5.dp)
                                     ){
                                         SearchBar(onSearchTextChanged = { searchText ->
-                                            tmp = remonteesModel.value?.remontees?.filter { remontee ->
-                                                remontee.name?.contains(
+                                            tmp = mountainsModel.value?.remontees?.filter { mountain ->
+                                                mountain.name?.contains(
                                                     "^${Regex.escape(searchText)}.*".toRegex(
                                                         RegexOption.IGNORE_CASE
                                                     )
@@ -208,11 +209,11 @@ class HomeActivity : ComponentActivity() {
                                         FilterStatus { status ->
                                             statusFilter.value = status
                                             tmp = if (status != null) {
-                                                remonteesModel.value?.remontees?.filter { remontee ->
-                                                    remontee.status == status
+                                                mountainsModel.value?.remontees?.filter { mountain ->
+                                                    mountain.status == status
                                                 }
                                             } else {
-                                                remonteesModel.value?.remontees
+                                                mountainsModel.value?.remontees
                                             }
                                         }
                                     }
@@ -222,13 +223,13 @@ class HomeActivity : ComponentActivity() {
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                     ) {
                                         tmp?.let { typeTmp ->
-                                            items(typeTmp) { remontee ->
-                                                val icon = when (remontee.type) {
-                                                    RemonteeTypeEnum.TELESKI -> R.drawable.ski_lift
-                                                    RemonteeTypeEnum.TELESIEGE -> R.drawable.telesiege
+                                            items(typeTmp) { mountain ->
+                                                val icon = when (mountain.type) {
+                                                    MountainTypeEnum.TELESKI -> R.drawable.ski_lift
+                                                    MountainTypeEnum.TELESIEGE -> R.drawable.telesiege
                                                     else -> R.drawable.baseline_error_24
                                                 }
-                                                CardRemontee(remontee, icon)
+                                                CardMountain(mountain, icon, LocalContext.current)
                                             }
                                         }
                                     }
