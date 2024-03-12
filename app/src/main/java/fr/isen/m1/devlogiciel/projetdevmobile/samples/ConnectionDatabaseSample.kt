@@ -14,7 +14,6 @@ import java.io.File
 
 class ConnectionDatabaseSample {
     private val rf = Firebase.database.reference
-
     suspend fun getPistesFromDatabase(): PistesModel? {
         Log.d("ConnectionPistesSample", "Starting getPistesFromDatabase")
         return try {
