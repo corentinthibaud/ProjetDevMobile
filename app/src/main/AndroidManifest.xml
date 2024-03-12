@@ -30,12 +30,12 @@
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.ProjetDevMobile"/>
         <activity
-            android:name=".activity.RemontesActivity"
+            android:name=".activity.MountainDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_remontes"
             android:theme="@style/Theme.ProjetDevMobile"/>
         <activity
-            android:name=".activity.PistesActivity"
+            android:name=".activity.SlopeDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_pistes"
             android:theme="@style/Theme.ProjetDevMobile"/>
