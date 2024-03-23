@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
@@ -58,6 +59,15 @@ class AuthenticationActivity : ComponentActivity() {
                 }
             }
         } else {
+            if(currentUser.displayName == null) {
+                setContent {
+                    ProjetDevMobileTheme {
+                        Surface {
+                            SetUsername()
+                        }
+                    }
+                }
+            }
             val intent = Intent(this, HomeActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
@@ -85,7 +95,6 @@ class AuthenticationActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val user = authFirebase.currentUser
                     Toast.makeText(this, "Sign In Successful", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
@@ -168,6 +177,32 @@ class AuthenticationActivity : ComponentActivity() {
                 .fillMaxWidth()
                 .padding(16.dp, 8.dp)) {
                 Text("Sign In")
+            }
+        }
+    }
+
+    @Composable
+    private fun SetUsername() {
+        var username by remember{mutableStateOf("")}
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()) {
+            Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Text("Set Username", style = MaterialTheme.typography.titleLarge)
+            }
+            TextField(value = username, onValueChange = {username = it}, label = { Text("Username") }, modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 10.dp))
+            Button(onClick = {
+                val user = authFirebase.currentUser
+                user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
+                val intent = Intent(this@AuthenticationActivity, HomeActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            },modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 20.dp, 16.dp)) {
+                Text("Set Username")
             }
         }
     }
