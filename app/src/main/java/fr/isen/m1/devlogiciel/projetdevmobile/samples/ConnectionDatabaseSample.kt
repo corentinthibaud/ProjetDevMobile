@@ -71,4 +71,20 @@ class ConnectionDatabaseSample {
             }
         }
     }
+
+    fun sendStatus(status: Boolean, type: Boolean, index: Int) {
+        val path: String
+        path = if(type) {
+            "piste/$index/status"
+        } else {
+            "remontee/$index/status"
+        }
+        val ref = database.getReference(path)
+        ref.setValue(status)
+    }
+
+    fun sendState(state: SlopeModel.Companion.SlopeStateEnum, index: Int) {
+        val ref = database.getReference("piste/$index/state")
+        ref.setValue(state)
+    }
 }

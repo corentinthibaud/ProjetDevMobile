@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -136,7 +137,7 @@ class HomeActivity : ComponentActivity() {
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         tmp?.let { typeTmp ->
-                                            items(typeTmp) { slope ->
+                                            itemsIndexed(typeTmp) { index, slope ->
                                                 val color: Color = when (slope.color) {
                                                     SlopeModel.Companion.SlopeColorEnum.BLUE -> Color.Blue
                                                     SlopeModel.Companion.SlopeColorEnum.GREEN -> Color(0xFF1EAB05)
@@ -144,7 +145,7 @@ class HomeActivity : ComponentActivity() {
                                                     SlopeModel.Companion.SlopeColorEnum.BLACK -> Color.Black
                                                     else -> Color.Transparent
                                                 }
-                                                CardSlope(slope, color)
+                                                CardSlope(slope, color, index)
                                             }
                                         }
                                     }
@@ -193,13 +194,13 @@ class HomeActivity : ComponentActivity() {
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                     ) {
                                         tmp?.let { typeTmp ->
-                                            items(typeTmp) { mountain ->
+                                            itemsIndexed(typeTmp) { index, mountain ->
                                                 val icon = when (mountain.type) {
                                                     MountainModel.Companion.MountainTypeEnum.TELESKI -> R.drawable.ski_lift
                                                     MountainModel.Companion.MountainTypeEnum.TELESIEGE -> R.drawable.telesiege
                                                     else -> R.drawable.baseline_error_24
                                                 }
-                                                CardMountain(mountain, icon)
+                                                CardMountain(mountain, icon, index)
                                             }
                                         }
                                     }
