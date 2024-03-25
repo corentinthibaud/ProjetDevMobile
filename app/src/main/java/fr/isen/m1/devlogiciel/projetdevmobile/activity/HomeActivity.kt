@@ -195,8 +195,8 @@ class HomeActivity : ComponentActivity() {
                                         tmp?.let { typeTmp ->
                                             items(typeTmp) { mountain ->
                                                 val icon = when (mountain.type) {
-                                                    MountainModel.Companion.MoutainTypeEnum.TELESKI -> R.drawable.ski_lift
-                                                    MountainModel.Companion.MoutainTypeEnum.TELESIEGE -> R.drawable.telesiege
+                                                    MountainModel.Companion.MountainTypeEnum.TELESKI -> R.drawable.ski_lift
+                                                    MountainModel.Companion.MountainTypeEnum.TELESIEGE -> R.drawable.telesiege
                                                     else -> R.drawable.baseline_error_24
                                                 }
                                                 CardMountain(mountain, icon)
