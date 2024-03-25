@@ -1,5 +1,6 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,12 +48,17 @@ import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import kotlinx.coroutines.launch
 
 class MountainDetailsActivity: ComponentActivity() {
-    // private var mountain = intent.getSerializableExtra("mountain") as? MountainModel
-    private val mountain = MountainModel("MountainTest", true, MountainModel.Companion.MoutainTypeEnum.TELESIEGE)
+    private lateinit var mountain : MountainModel
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            if(intent.getSerializableExtra("mountain") !== null) {
+                mountain = intent.getSerializableExtra("mountain") as MountainModel
+            } else {
+                val intent = Intent(this@MountainDetailsActivity, HomeActivity::class.java)
+                startActivity(intent)
+            }
             Surface {
                 val comments: List<CommentModel> = ArrayList()
                 comments.plus(CommentModel("User1", "Comment1", "PisteTest"))
@@ -66,7 +72,7 @@ class MountainDetailsActivity: ComponentActivity() {
                         .fillMaxWidth()) {
                     item(mountain) {
                         Box(Modifier.fillMaxWidth()) {
-                            Text(mountain?.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
+                            Text(mountain.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
                             IconButton(onClick = {
                                 showEditionForm = true
                                 showBottomSheet = true
@@ -75,15 +81,15 @@ class MountainDetailsActivity: ComponentActivity() {
                             }
                         }
                         Row {
-                            val open = if (mountain?.status == true) "Open" else "Closed"
+                            val open = if (mountain.status == true) "Open" else "Closed"
 
                             SuggestionChip(
                                 label = { Text(open) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp),
                                 colors = ChipColors(
-                                    containerColor = if (mountain?.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                                    labelColor = if (mountain?.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
+                                    containerColor = if (mountain.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                                    labelColor = if (mountain.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
                                     leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
                                     trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
                                     disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
@@ -94,7 +100,7 @@ class MountainDetailsActivity: ComponentActivity() {
 
                             )
                             SuggestionChip(
-                                label = { Text(mountain?.type?.string.toString()) },
+                                label = { Text(mountain.type?.string.toString()) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp)
                             )
@@ -167,7 +173,7 @@ class MountainDetailsActivity: ComponentActivity() {
     private fun EditionForm() {
         Text("Edition form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-            var status by remember {mutableStateOf(mountain?.status ?: false)}
+            var status by remember {mutableStateOf(mountain.status ?: false)}
             Text(text = "Status", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
             Switch(checked = status, onCheckedChange = {status = it} )
         }

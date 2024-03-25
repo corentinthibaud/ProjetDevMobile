@@ -1,5 +1,6 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -50,13 +51,18 @@ import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
 import kotlinx.coroutines.launch
 
 class SlopeDetailsActivity: ComponentActivity() {
-    // private var piste = intent.getSerializableExtra("piste") as? PisteModel
-    private val piste = SlopeModel("PisteTest", SlopeModel.Companion.SlopeColorEnum.BLUE, SlopeModel.Companion.SlopeStateEnum.UNREPORTED, true)
+    private lateinit var slope : SlopeModel
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Surface {
+                if(intent.getSerializableExtra("slope") !== null) {
+                    slope = intent.getSerializableExtra("slope") as SlopeModel
+                } else {
+                    val intent = Intent(this@SlopeDetailsActivity, HomeActivity::class.java)
+                    startActivity(intent)
+                }
                 val comments: List<CommentModel> = ArrayList()
                 comments.plus(CommentModel("User1", "Comment1", "PisteTest"))
                 val sheetState = rememberModalBottomSheetState()
@@ -67,9 +73,9 @@ class SlopeDetailsActivity: ComponentActivity() {
                     Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()) {
-                    item(piste) {
+                    item(slope) {
                         Box(Modifier.fillMaxWidth()) {
-                            Text(piste?.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
+                            Text(slope.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
                             IconButton(onClick = {
                                 showEditionForm = true
                                 showBottomSheet = true
@@ -79,19 +85,19 @@ class SlopeDetailsActivity: ComponentActivity() {
                         }
                         Row {
                             SuggestionChip(
-                                label = { Text(piste?.color?.string.toString()) },
+                                label = { Text(slope.color?.string.toString()) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp)
                             )
-                            val open = if (piste?.status == true) "Open" else "Closed"
+                            val open = if (slope.status == true) "Open" else "Closed"
 
                             SuggestionChip(
                                 label = { Text(open) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp),
                                 colors = ChipColors(
-                                    containerColor = if (piste?.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                                    labelColor = if (piste?.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
+                                    containerColor = if (slope.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                                    labelColor = if (slope.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
                                     leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
                                     trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
                                     disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
@@ -102,7 +108,7 @@ class SlopeDetailsActivity: ComponentActivity() {
 
                             )
                             SuggestionChip(
-                                label = { Text(piste?.state?.string.toString()) },
+                                label = { Text(slope.state?.string.toString()) },
                                 onClick = { /*TODO*/ },
                                 modifier = Modifier.padding(10.dp)
                             )
@@ -176,12 +182,12 @@ class SlopeDetailsActivity: ComponentActivity() {
         var dropdownExpanded by remember { mutableStateOf(false) }
         Text("Edition form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-            var status by remember {mutableStateOf(piste?.status ?: false)}
+            var status by remember {mutableStateOf(slope.status ?: false)}
             Text(text = "Status", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
             Switch(checked = status, onCheckedChange = {status = it} )
         }
         Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 40.dp)) {
-            var state = piste?.state ?: SlopeModel.Companion.SlopeStateEnum.UNREPORTED
+            var state = slope.state ?: SlopeModel.Companion.SlopeStateEnum.UNREPORTED
             Text(text = "State", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
             Box {
                 TextField(value = state.string, onValueChange = {}, readOnly = true, trailingIcon = {
