@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 
@@ -38,6 +39,9 @@ class AuthenticationActivity : ComponentActivity() {
     private lateinit var authFirebase : FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val database = FirebaseDatabase.getInstance().apply {
+            setPersistenceEnabled(true)
+        }
         authFirebase = Firebase.auth
     }
 
@@ -58,7 +62,7 @@ class AuthenticationActivity : ComponentActivity() {
                 }
             }
         } else {
-            val intent = Intent(this, PistesActivity::class.java)
+            val intent = Intent(this, HomeActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }

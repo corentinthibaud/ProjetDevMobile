@@ -6,10 +6,10 @@ import java.io.Serializable
 data class MountainModel (
     @SerializedName("name") val name: String? = null,
     @SerializedName("status") val status: Boolean? = null,
-    @SerializedName("type") val type: MoutainTypeEnum? = null
+    @SerializedName("type") val type: MountainTypeEnum? = null
 ): Serializable {
     companion object {
-        enum class MoutainTypeEnum(val string: String) {
+        enum class MountainTypeEnum(val string: String) {
             TELESKI("teleski"),
             TELESIEGE("telesiege")
         }
@@ -17,5 +17,5 @@ data class MountainModel (
 }
 
 data class MountainsModel (
-    val remontees: List<MountainModel>? = null
+    val mountains: List<MountainModel>? = null
 )

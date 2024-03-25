@@ -1,6 +1,8 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -9,10 +11,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.DropdownMenu
@@ -22,6 +26,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,13 +36,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteColorEnum
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
 
 @Composable
 fun Header(text: String) {
@@ -103,7 +110,7 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
     Row (
         modifier = Modifier.padding(top = 5.dp)
     ){
-        Text(text = "Status de la piste :",
+        Text(text = "Status :",
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .padding(start = 20.dp)
@@ -157,7 +164,7 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
 }
 
 @Composable
-fun FilterColor(onStateChange: (PisteColorEnum?) -> Unit) {
+fun FilterColor(onStateChange: (SlopeModel.Companion.SlopeColorEnum?) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var text by remember {  mutableStateOf("Tous")  }
     Row (
@@ -193,34 +200,34 @@ fun FilterColor(onStateChange: (PisteColorEnum?) -> Unit) {
                         text = { Text(text = "Tous") },
                         onClick = {
                             onStateChange(null)
-                            text = "All"
+                            text = "Tous"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Bleu") },
                         onClick = {
-                            onStateChange(PisteColorEnum.BLUE)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.BLUE)
                             text = "Bleu"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Verte") },
                         onClick = {
-                            onStateChange(PisteColorEnum.GREEN)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.GREEN)
                             text = "Verte"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Rouge") },
                         onClick = {
-                            onStateChange(PisteColorEnum.RED)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.RED)
                             text = "Rouge"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Noire") },
                         onClick = {
-                            onStateChange(PisteColorEnum.BLACK)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.BLACK)
                             text = "Noire"
                         }
                     )
@@ -235,8 +242,7 @@ fun NavBar(activity: String) {
 
     val selectedActivity: ButtonNav = when(activity) {
         "Home" -> ButtonNav.Home
-        "Piste" -> ButtonNav.Pistes
-        "Remontee" -> ButtonNav.Remontees
+        "Itinéraires" -> ButtonNav.Itinerary
         "Chat" -> ButtonNav.Chat
         else -> {
             ButtonNav.Home
@@ -245,8 +251,7 @@ fun NavBar(activity: String) {
 
     val items = listOf(
         ButtonNav.Home,
-        ButtonNav.Pistes,
-        ButtonNav.Remontees,
+        ButtonNav.Itinerary,
         ButtonNav.Chat
     )
 
@@ -270,18 +275,11 @@ sealed class ButtonNav(var title: String, var icon: Int, var activity: Class<*>)
             HomeActivity::class.java
         )
 
-    data object Pistes :
+    data object Itinerary :
         ButtonNav(
-            "Pistes",
-            R.drawable.slope_black,
-            PistesActivity::class.java
-        )
-
-    data object Remontees :
-        ButtonNav(
-            "Remontées",
-            R.drawable.telesiege,
-            RemontesActivity::class.java
+            "Itinéraires",
+            R.drawable.baseline_error_24,
+            HomeActivity::class.java
         )
 
     data object Chat:
@@ -314,4 +312,109 @@ fun RowScope.AddItem(button: ButtonNav, isSelected: Boolean) {
                     .size(30.dp)
             )
         })
+}
+
+@Composable
+fun CardSlope(slope : SlopeModel, color: Color) {
+    OutlinedCard(
+        border = BorderStroke(1.dp, Color.Gray),
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .height(50.dp)
+            .padding(2.dp),
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(start = 5.dp)
+        ){
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(color)
+                    .size(42.dp)
+            ) {
+                Image(painter = painterResource(
+                    id = R.drawable.slope_white),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(38.dp)
+                )
+            }
+            slope.name?.let { Text(text = it, modifier = Modifier
+                .padding(start = 10.dp)
+                .fillMaxWidth(0.63f)) }
+            Spacer(modifier = Modifier.weight(0.2f))
+            slope.status?.let {
+                if (slope.status) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF1EAB05))
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Ouverte", color = Color.White)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Fermée", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CardMountain(mountain : MountainModel, icon: Int) {
+    OutlinedCard(
+        border = BorderStroke(1.dp, Color.Gray),
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .height(50.dp)
+            .padding(2.dp),
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Image(painter = painterResource(
+                id = icon),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(start = 5.dp)
+            )
+            mountain.name?.let { Text(text = mountain.name, modifier = Modifier
+                .padding(start = 10.dp)
+                .fillMaxWidth(0.63f)) }
+            Spacer(modifier = Modifier.weight(0.2f))
+            mountain.status?.let {
+                if(mountain.status) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF1EAB05))
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Ouvert", color = Color.White)
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .padding(10.dp)
+                            .fillMaxWidth(0.85f)
+                    ) {
+                        Text(text = "Fermé", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
 }

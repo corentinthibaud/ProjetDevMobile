@@ -23,5 +23,5 @@ data class SlopeModel (
 }
 
 data class SlopesModel (
-    val pistes: List<SlopeModel>? = null
+    val slopes: List<SlopeModel>? = null
 ): Serializable

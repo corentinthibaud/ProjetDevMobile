@@ -1,108 +1,74 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.samples
 
-import android.content.Context
 import android.util.Log
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PisteModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.PistesModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteeModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.RemonteesModel
-import kotlinx.coroutines.tasks.await
-import java.io.File
+import androidx.lifecycle.LiveData
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainsModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
+import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopesModel
 
 class ConnectionDatabaseSample {
-    private val rf = Firebase.database.reference
-    suspend fun getPistesFromDatabase(): PistesModel? {
-        Log.d("ConnectionPistesSample", "Starting getPistesFromDatabase")
-        return try {
-            val snapshot = rf.child("piste").get().await()
-            if (snapshot.exists()) {
-                val pisteList = ArrayList<PisteModel>()
-                for (piste in snapshot.children) {
-                    Log.d("ConnectionRemonteeSample", "Get value$piste")
-                    val pisteItem = piste.getValue(PisteModel::class.java)
-                    pisteItem?.let { pisteList.add(it) }
+    private val database = FirebaseDatabase.getInstance()
+
+
+    val slopesReference = database.getReference("piste")
+    val mountainsReference = database.getReference("remontee")
+
+    fun getSlopes(): LiveData<SlopesModel> {
+        return object : LiveData<SlopesModel>() {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val slopeList = ArrayList<SlopeModel>()
+                    for (slope in snapshot.children) {
+                        val slopeItem = slope.getValue(SlopeModel::class.java)
+                        slopeItem?.let { slopeList.add(it) }
+                    }
+                    value = SlopesModel(slopeList)
                 }
-                Log.d("ConnectionPistesSample", "Ending getPistesFromDatabase")
-                PistesModel(pisteList)
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("ConnectionPistesSample", "Error getting data", e)
-            null
-        }
-    }
 
-    suspend fun getRemonteeFromDatabase(): RemonteesModel? {
-        Log.d("ConnectionRemonteeSample", "Starting getRemonteeFromDatabase")
-        return try {
-            val snapshot = rf.child("remontee").get().await()
-            if (snapshot.exists()) {
-                val remonteeList = ArrayList<RemonteeModel>()
-                for (remontee in snapshot.children) {
-                    Log.d("ConnectionRemonteeSample", "Get value$remontee")
-                    val remonteeItem = remontee.getValue(RemonteeModel::class.java)
-                    remonteeItem?.let { remonteeList.add(it) }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ConnectionPistesSample", "Error getting data", error.toException())
                 }
-                Log.d("ConnectionRemonteeSample", "Ending getRemonteeFromDatabase")
-                RemonteesModel(remonteeList)
-            } else {
-                null
             }
-        } catch (e: Exception) {
-            Log.e("ConnectionRemonteeSample", "Error getting data", e)
-            null
+
+            override fun onActive() {
+                slopesReference.addValueEventListener(listener)
+            }
+
+            override fun onInactive() {
+                slopesReference.removeEventListener(listener)
+            }
         }
     }
 
-    fun insertPisteCache(pistesModel: PistesModel, context: Context) {
-        val cacheFile = File(context.cacheDir, "piste.json")
+    fun getMountains(): LiveData<MountainsModel> {
+        return object : LiveData<MountainsModel>() {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val mountainList = ArrayList<MountainModel>()
+                    for (mountain in snapshot.children) {
+                        val mountainItem = mountain.getValue(MountainModel::class.java)
+                        mountainItem?.let { mountainList.add(it) }
+                    }
+                    value = MountainsModel(mountainList)
+                }
 
-        if(!cacheFile.exists()) {
-            cacheFile.createNewFile()
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ConnectionPistesSample", "Error getting data", error.toException())
+                }
+            }
+
+            override fun onActive() {
+                mountainsReference.addValueEventListener(listener)
+            }
+
+            override fun onInactive() {
+                mountainsReference.removeEventListener(listener)
+            }
         }
-
-        val json = Gson().toJson(pistesModel)
-
-        cacheFile.writeText(json)
-    }
-
-    fun getPisteCache(context: Context): PistesModel? {
-        val cacheFile = File(context.cacheDir, "piste.json")
-
-        if(!cacheFile.exists()) {
-            cacheFile.createNewFile()
-        }
-
-        val jsonString = cacheFile.readText()
-
-        return Gson().fromJson(jsonString, PistesModel::class.java)
-    }
-
-    fun insertRemonteeCache(remonteesModel: RemonteesModel, context: Context) {
-        val cacheFile = File(context.cacheDir, "remontee.json")
-
-        if(!cacheFile.exists()) {
-            cacheFile.createNewFile()
-        }
-
-        val json = Gson().toJson(remonteesModel)
-
-        cacheFile.writeText(json)
-    }
-
-    fun getRemonteeCache(context: Context): RemonteesModel? {
-        val cacheFile = File(context.cacheDir, "remontee.json")
-
-        if(!cacheFile.exists()) {
-            cacheFile.createNewFile()
-        }
-
-        val jsonString = cacheFile.readText()
-
-        return Gson().fromJson(jsonString, RemonteesModel::class.java)
     }
 }
