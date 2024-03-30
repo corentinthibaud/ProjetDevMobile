@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,7 +41,7 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var selectedTabIndex by remember { mutableStateOf(0) }
+            var selectedTabIndex by remember { mutableIntStateOf(0) }
             val slopesModel = remember { mutableStateOf<SlopesModel?>(null) }
             val isLoading = remember { mutableStateOf(true) }
             val statusFilter = remember { mutableStateOf<Boolean?>(null) }
@@ -82,12 +83,12 @@ class HomeActivity : ComponentActivity() {
                                         Tab(
                                             selected = selectedTabIndex == 0,
                                             onClick = { selectedTabIndex = 0 },
-                                            text = { Text(text = "Tab 1", color = Color.Black) },
+                                            text = { Text(text = "Slopes", color = Color.Black) },
                                         )
                                         Tab(
                                             selected = selectedTabIndex == 1,
                                             onClick = { selectedTabIndex = 1 },
-                                            text = { Text(text = "Tab 2", color = Color.Black) },
+                                            text = { Text(text = "Mountains", color = Color.Black) },
                                         )
                                     }
                                 )
@@ -151,7 +152,6 @@ class HomeActivity : ComponentActivity() {
                                 }
                             }
                         } else {
-
                             if (isLoading.value) {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),

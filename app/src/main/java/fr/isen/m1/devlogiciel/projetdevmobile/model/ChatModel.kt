@@ -1,5 +1,7 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.model
 
-class ChatModel (var user: String, var message: String)
+import java.io.Serializable
 
-class ChatsModel (var chats: MutableList<ChatModel>)
+data class ChatModel (var user: String? = null, var message: String? = null): Serializable
+
+data class ChatsModel (var chats: List<ChatModel>): Serializable
