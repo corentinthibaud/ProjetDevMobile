@@ -1,12 +1,10 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
-import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
-import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel.Companion.SlopeColorEnum
 
 @Composable
 fun Header(text: String) {
@@ -113,7 +110,7 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
     Row (
         modifier = Modifier.padding(top = 5.dp)
     ){
-        Text(text = "Status de la piste :",
+        Text(text = "Status :",
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .padding(start = 20.dp)
@@ -167,7 +164,7 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
 }
 
 @Composable
-fun FilterColor(onStateChange: (SlopeColorEnum?) -> Unit) {
+fun FilterColor(onStateChange: (SlopeModel.Companion.SlopeColorEnum?) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var text by remember {  mutableStateOf("Tous")  }
     Row (
@@ -203,34 +200,34 @@ fun FilterColor(onStateChange: (SlopeColorEnum?) -> Unit) {
                         text = { Text(text = "Tous") },
                         onClick = {
                             onStateChange(null)
-                            text = "All"
+                            text = "Tous"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Bleu") },
                         onClick = {
-                            onStateChange(SlopeColorEnum.BLUE)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.BLUE)
                             text = "Bleu"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Verte") },
                         onClick = {
-                            onStateChange(SlopeColorEnum.GREEN)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.GREEN)
                             text = "Verte"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Rouge") },
                         onClick = {
-                            onStateChange(SlopeColorEnum.RED)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.RED)
                             text = "Rouge"
                         }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Noire") },
                         onClick = {
-                            onStateChange(SlopeColorEnum.BLACK)
+                            onStateChange(SlopeModel.Companion.SlopeColorEnum.BLACK)
                             text = "Noire"
                         }
                     )
@@ -318,18 +315,13 @@ fun RowScope.AddItem(button: ButtonNav, isSelected: Boolean) {
 }
 
 @Composable
-fun CardSlope(slope : SlopeModel, color: Color, context: Context) {
+fun CardSlope(slope : SlopeModel, color: Color) {
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(50.dp)
-            .padding(2.dp)
-            .clickable {
-                val intent = Intent(context, SlopeDetailsActivity::class.java)
-                intent.putExtra("slope", slope)
-                context.startActivity(intent)
-            },
+            .padding(2.dp),
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -379,18 +371,13 @@ fun CardSlope(slope : SlopeModel, color: Color, context: Context) {
 }
 
 @Composable
-fun CardMountain(mountain : MountainModel, icon: Int, context: Context) {
+fun CardMountain(mountain : MountainModel, icon: Int) {
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(50.dp)
-            .padding(2.dp)
-            .clickable {
-                val intent = Intent(context, MountainDetailsActivity::class.java)
-                intent.putExtra("mountain", mountain)
-                context.startActivity(intent)
-            },
+            .padding(2.dp),
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,

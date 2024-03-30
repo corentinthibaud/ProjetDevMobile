@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class SlopeMountainModel(
-    @SerializedName("piste") val piste: SlopeModel? = null,
-    @SerializedName("remontee") val remontee: MountainModel? = null,
+    @SerializedName("piste") val slope: SlopeModel? = null,
+    @SerializedName("remontee") val mountain: MountainModel? = null,
     @SerializedName("state") val state: Int? = null
 ): Serializable
 

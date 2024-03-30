@@ -17,5 +17,5 @@ data class MountainModel (
 }
 
 data class MountainsModel (
-    val remontees: List<MountainModel>? = null
+    val mountains: List<MountainModel>? = null
 )
