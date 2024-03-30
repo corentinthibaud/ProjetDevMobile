@@ -17,7 +17,9 @@ data class SlopeModel (
         }
 
         enum class SlopeStateEnum(val string: String) {
-            UNREPORTED("Unreported")
+            UNREPORTED("Unreported"),
+            ICY("Glacée"),
+            OPTIMAL("Optimale")
         }
     }
 }

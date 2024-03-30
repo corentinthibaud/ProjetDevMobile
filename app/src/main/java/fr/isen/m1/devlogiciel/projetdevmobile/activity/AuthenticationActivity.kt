@@ -39,10 +39,10 @@ class AuthenticationActivity : ComponentActivity() {
     private lateinit var authFirebase : FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val database = FirebaseDatabase.getInstance().apply {
+        authFirebase = Firebase.auth
+        FirebaseDatabase.getInstance().apply {
             setPersistenceEnabled(true)
         }
-        authFirebase = Firebase.auth
     }
 
     override fun onStart() {
@@ -73,7 +73,8 @@ class AuthenticationActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, ChatActivity::class.java)
+                    val intent = Intent(this@AuthenticationActivity, AuthenticationActivity::class.java)
+                    intent.putExtra("VIEW", "LOGIN")
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivity(intent)
                 } else {
@@ -89,10 +90,11 @@ class AuthenticationActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val user = authFirebase.currentUser
                     Toast.makeText(this, "Sign In Successful", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
                 } else {
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
                     // If sign in fails, display a message to the user.
                 }
             }

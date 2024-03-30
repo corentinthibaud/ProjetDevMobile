@@ -14,7 +14,6 @@ import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopesModel
 class ConnectionDatabaseSample {
     private val database = FirebaseDatabase.getInstance()
 
-
     val slopesReference = database.getReference("piste")
     val mountainsReference = database.getReference("remontee")
 
