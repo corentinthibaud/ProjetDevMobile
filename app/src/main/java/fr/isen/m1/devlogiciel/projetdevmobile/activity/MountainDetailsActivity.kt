@@ -45,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
-import fr.isen.m1.devlogiciel.projetdevmobile.model.CommentModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
 import kotlinx.coroutines.launch
