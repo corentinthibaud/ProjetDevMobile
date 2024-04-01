@@ -2,6 +2,7 @@ package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -80,11 +81,10 @@ class SlopeDetailsActivity: ComponentActivity() {
                         startActivity(intent)
                     }
                     val index = intent.getSerializableExtra("index") as Int
-                    val comments: List<CommentModel> = ArrayList()
-                    comments.plus(CommentModel("User1", "Comment1", "PisteTest"))
                     val sheetState = rememberModalBottomSheetState()
                     var showEditionForm by remember { mutableStateOf(false) }
                     var showBottomSheet by remember { mutableStateOf(false) }
+                    val comments = remember { mutableStateOf(slope.comments) }
                     val status = remember { mutableStateOf(slope.status?: false) }
                     val state = remember { mutableStateOf(slope.state?: SlopeModel.Companion.SlopeStateEnum.UNREPORTED) }
                     val scope = rememberCoroutineScope()
@@ -137,10 +137,12 @@ class SlopeDetailsActivity: ComponentActivity() {
                                 Text("Comments", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
                             }
                         }
-                        itemsIndexed(comments) {_, it ->
-                            ListItem(headlineContent = { Text(text = it.user ?: "Unknown") }, supportingContent = {
-                                Text(text = it.comment ?: "No comment")
-                            })
+                        comments.value?.let {
+                            itemsIndexed(it) { _, it ->
+                                ListItem(headlineContent = { Text(text = it.user ?: "Unknown") }, supportingContent = {
+                                    Text(text = it.comment ?: "No comment")
+                                })
+                            }
                         }
                     }
                     Box(

@@ -6,6 +6,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import fr.isen.m1.devlogiciel.projetdevmobile.model.CommentModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainsModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
@@ -24,7 +25,13 @@ class ConnectionDatabaseSample {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val slopeList = ArrayList<SlopeModel>()
                     for (slope in snapshot.children) {
-                        val slopeItem = slope.getValue(SlopeModel::class.java)
+                        val slopeItem =  slope.getValue(SlopeModel::class.java)
+                        val comments = ArrayList<CommentModel>()
+                        slope.child("comments").children.forEach { commentSnapshot ->
+                            val commentItem = commentSnapshot.getValue(CommentModel::class.java)
+                            commentItem?.let { comments.add(it) }
+                        }
+                        slopeItem?.comments = comments
                         slopeItem?.let { slopeList.add(it) }
                     }
                     value = SlopesModel(slopeList)
@@ -52,6 +59,12 @@ class ConnectionDatabaseSample {
                     val mountainList = ArrayList<MountainModel>()
                     for (mountain in snapshot.children) {
                         val mountainItem = mountain.getValue(MountainModel::class.java)
+                        val comments = ArrayList<CommentModel>()
+                        mountain.child("comments").children.forEach { commentSnapshot ->
+                            val commentItem = commentSnapshot.getValue(CommentModel::class.java)
+                            commentItem?.let { comments.add(it) }
+                        }
+                        mountainItem?.comments = comments
                         mountainItem?.let { mountainList.add(it) }
                     }
                     value = MountainsModel(mountainList)
@@ -73,8 +86,7 @@ class ConnectionDatabaseSample {
     }
 
     fun sendStatus(status: Boolean, type: Boolean, index: Int) {
-        val path: String
-        path = if(type) {
+        val path: String = if(type) {
             "piste/$index/status"
         } else {
             "remontee/$index/status"
@@ -86,5 +98,16 @@ class ConnectionDatabaseSample {
     fun sendState(state: SlopeModel.Companion.SlopeStateEnum, index: Int) {
         val ref = database.getReference("piste/$index/state")
         ref.setValue(state)
+    }
+
+    //Index of slope or moutain and id = list.size()
+    fun sendComments(userName: String, message: String, index: Int, type: Boolean, id: Int) {
+        val path: String = if(type) {
+            "piste/$index/comments/$id"
+        } else {
+            "remontee/$index/comments/$id"
+        }
+        val ref = database.getReference(path)
+        ref.setValue(CommentModel(userName, message))
     }
 }

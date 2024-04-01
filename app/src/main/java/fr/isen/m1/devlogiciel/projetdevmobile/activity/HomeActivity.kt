@@ -1,6 +1,7 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -42,19 +43,20 @@ class HomeActivity : ComponentActivity() {
         setContent {
             var selectedTabIndex by remember { mutableStateOf(0) }
             val slopesModel = remember { mutableStateOf<SlopesModel?>(null) }
-            val isLoading = remember { mutableStateOf(true) }
             val statusFilter = remember { mutableStateOf<Boolean?>(null) }
+            val isLoading = remember { mutableStateOf(true) }
             val colorFilter = remember { mutableStateOf<SlopeModel.Companion.SlopeColorEnum?>(null) }
             val mountainsModel = remember { mutableStateOf<MountainsModel?>(null) }
             LaunchedEffect(Unit) {
                 ConnectionDatabaseSample().getSlopes().observe(this@HomeActivity) { data ->
                     slopesModel.value = data
-                    isLoading.value = false
+                    Log.i("Data1", "Slopes: " + slopesModel.value)
                 }
                 ConnectionDatabaseSample().getMountains().observe(this@HomeActivity) { data ->
                     mountainsModel.value = data
-                    isLoading.value = false
+                    Log.i("Data", "Mountains: " + mountainsModel.value)
                 }
+                isLoading.value = false
             }
             ProjetDevMobileTheme {
                 // A surface container using the 'background' color from the theme
@@ -94,112 +96,104 @@ class HomeActivity : ComponentActivity() {
                             }
                         }
                     ) { content ->
-                        if(selectedTabIndex == 0) {
-
-                            if (isLoading.value) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            } else {
-                                var tmp by remember { mutableStateOf(slopesModel.value?.slopes) }
-                                Column (
-                                    modifier = Modifier.padding(content)
-                                ){
-                                    Column(
-                                        modifier = Modifier.padding(5.dp)
-                                    ) {
-                                        SearchBar(onSearchTextChanged = { searchText ->
-                                            tmp = slopesModel.value?.slopes?.filter { slope ->
-                                                slope.name?.contains("^${Regex.escape(searchText)}.*".toRegex(RegexOption.IGNORE_CASE)) ?: false
-                                            }
-                                        })
-                                        FilterStatus { status ->
-                                            statusFilter.value = status
-                                            tmp = slopesModel.value?.slopes?.filter { slope ->
-                                                (statusFilter.value == null || slope.status == statusFilter.value) &&
-                                                        (colorFilter.value == null || slope.color == colorFilter.value)
-                                            }
-                                        }
-                                        FilterColor(onStateChange = { color ->
-                                            colorFilter.value = color
-                                            tmp = slopesModel.value?.slopes?.filter { slope ->
-                                                (statusFilter.value == null || slope.status == statusFilter.value) &&
-                                                        (colorFilter.value == null || slope.color == colorFilter.value)
-                                            }
-                                        })
-                                    }
-                                    LazyColumn(
-                                        modifier = Modifier.fillMaxSize(),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        tmp?.let { typeTmp ->
-                                            itemsIndexed(typeTmp) { index, slope ->
-                                                val color: Color = when (slope.color) {
-                                                    SlopeModel.Companion.SlopeColorEnum.BLUE -> Color.Blue
-                                                    SlopeModel.Companion.SlopeColorEnum.GREEN -> Color(0xFF1EAB05)
-                                                    SlopeModel.Companion.SlopeColorEnum.RED -> Color.Red
-                                                    SlopeModel.Companion.SlopeColorEnum.BLACK -> Color.Black
-                                                    else -> Color.Transparent
-                                                }
-                                                CardSlope(slope, color, index)
-                                            }
-                                        }
-                                    }
-                                }
+                        if (isLoading.value || (slopesModel.value == null && mountainsModel.value == null)) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
                         } else {
-
-                            if (isLoading.value) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            } else {
-                                var tmp by remember { mutableStateOf(mountainsModel.value?.mountains) }
-                                Column(
-                                    modifier = Modifier.padding(content)
-                                ) {
+                            when(selectedTabIndex) {
+                                0 -> {
+                                    var tmp by remember { mutableStateOf(slopesModel.value?.slopes) }
                                     Column (
-                                        modifier = Modifier.padding(5.dp)
+                                        modifier = Modifier.padding(content)
                                     ){
-                                        SearchBar(onSearchTextChanged = { searchText ->
-                                            tmp = mountainsModel.value?.mountains?.filter { mountain ->
-                                                mountain.name?.contains(
-                                                    "^${Regex.escape(searchText)}.*".toRegex(
-                                                        RegexOption.IGNORE_CASE
-                                                    )
-                                                ) ?: false
-                                            }
-                                        })
-                                        FilterStatus { status ->
-                                            statusFilter.value = status
-                                            tmp = if (status != null) {
-                                                mountainsModel.value?.mountains?.filter { mountain ->
-                                                    mountain.status == status
+                                        Column(
+                                            modifier = Modifier.padding(5.dp)
+                                        ) {
+                                            SearchBar(onSearchTextChanged = { searchText ->
+                                                tmp = slopesModel.value?.slopes?.filter { slope ->
+                                                    slope.name?.contains("^${Regex.escape(searchText)}.*".toRegex(RegexOption.IGNORE_CASE)) ?: false
                                                 }
-                                            } else {
-                                                mountainsModel.value?.mountains
+                                            })
+                                            FilterStatus { status ->
+                                                statusFilter.value = status
+                                                tmp = slopesModel.value?.slopes?.filter { slope ->
+                                                    (statusFilter.value == null || slope.status == statusFilter.value) &&
+                                                            (colorFilter.value == null || slope.color == colorFilter.value)
+                                                }
+                                            }
+                                            FilterColor(onStateChange = { color ->
+                                                colorFilter.value = color
+                                                tmp = slopesModel.value?.slopes?.filter { slope ->
+                                                    (statusFilter.value == null || slope.status == statusFilter.value) &&
+                                                            (colorFilter.value == null || slope.color == colorFilter.value)
+                                                }
+                                            })
+                                        }
+                                        LazyColumn(
+                                            modifier = Modifier.fillMaxSize(),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            tmp?.let { typeTmp ->
+                                                itemsIndexed(typeTmp) { index, slope ->
+                                                    val color: Color = when (slope.color) {
+                                                        SlopeModel.Companion.SlopeColorEnum.BLUE -> Color.Blue
+                                                        SlopeModel.Companion.SlopeColorEnum.GREEN -> Color(0xFF1EAB05)
+                                                        SlopeModel.Companion.SlopeColorEnum.RED -> Color.Red
+                                                        SlopeModel.Companion.SlopeColorEnum.BLACK -> Color.Black
+                                                        else -> Color.Transparent
+                                                    }
+                                                    CardSlope(slope, color, index)
+                                                }
                                             }
                                         }
                                     }
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                }
+                                1 -> {
+                                    var tmp by remember { mutableStateOf(mountainsModel.value?.mountains) }
+                                    Column(
+                                        modifier = Modifier.padding(content)
                                     ) {
-                                        tmp?.let { typeTmp ->
-                                            itemsIndexed(typeTmp) { index, mountain ->
-                                                val icon = when (mountain.type) {
-                                                    MountainModel.Companion.MountainTypeEnum.TELESKI -> R.drawable.ski_lift
-                                                    MountainModel.Companion.MountainTypeEnum.TELESIEGE -> R.drawable.telesiege
-                                                    else -> R.drawable.baseline_error_24
+                                        Column (
+                                            modifier = Modifier.padding(5.dp)
+                                        ){
+                                            SearchBar(onSearchTextChanged = { searchText ->
+                                                tmp = mountainsModel.value?.mountains?.filter { mountain ->
+                                                    mountain.name?.contains(
+                                                        "^${Regex.escape(searchText)}.*".toRegex(
+                                                            RegexOption.IGNORE_CASE
+                                                        )
+                                                    ) ?: false
                                                 }
-                                                CardMountain(mountain, icon, index)
+                                            })
+                                            FilterStatus { status ->
+                                                statusFilter.value = status
+                                                tmp = if (status != null) {
+                                                    mountainsModel.value?.mountains?.filter { mountain ->
+                                                        mountain.status == status
+                                                    }
+                                                } else {
+                                                    mountainsModel.value?.mountains
+                                                }
+                                            }
+                                        }
+                                        LazyColumn(
+                                            modifier = Modifier
+                                                .fillMaxSize(),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                        ) {
+                                            tmp?.let { typeTmp ->
+                                                itemsIndexed(typeTmp) { index, mountain ->
+                                                    val icon = when (mountain.type) {
+                                                        MountainModel.Companion.MountainTypeEnum.TELESKI -> R.drawable.ski_lift
+                                                        MountainModel.Companion.MountainTypeEnum.TELESIEGE -> R.drawable.telesiege
+                                                        else -> R.drawable.baseline_error_24
+                                                    }
+                                                    CardMountain(mountain, icon, index)
+                                                }
                                             }
                                         }
                                     }
@@ -210,5 +204,9 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }

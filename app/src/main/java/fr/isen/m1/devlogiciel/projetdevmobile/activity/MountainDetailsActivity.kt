@@ -76,12 +76,11 @@ class MountainDetailsActivity: ComponentActivity() {
                         }
                     }
                 ) { content ->
-                    val comments: List<CommentModel> = ArrayList()
-                    comments.plus(CommentModel("User1", "Comment1", "PisteTest"))
                     val sheetState = rememberModalBottomSheetState()
                     var showEditionForm by remember { mutableStateOf(false) }
                     var showBottomSheet by remember { mutableStateOf(false) }
                     val status = remember { mutableStateOf(mountain.status ?: false) }
+                    val comments = remember { mutableStateOf(mountain.comments) }
                     val scope = rememberCoroutineScope()
                     LazyColumn(
                         Modifier
@@ -147,12 +146,12 @@ class MountainDetailsActivity: ComponentActivity() {
                                 )
                             }
                         }
-                        itemsIndexed(comments) { _, it ->
-                            ListItem(
-                                headlineContent = { Text(text = it.user ?: "Unknown") },
-                                supportingContent = {
+                        comments.value?.let {
+                            itemsIndexed(it) { _, it ->
+                                ListItem(headlineContent = { Text(text = it.user ?: "Unknown") }, supportingContent = {
                                     Text(text = it.comment ?: "No comment")
                                 })
+                            }
                         }
                     }
                     Box(
