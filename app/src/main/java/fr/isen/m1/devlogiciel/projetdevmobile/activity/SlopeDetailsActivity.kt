@@ -48,8 +48,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import fr.isen.m1.devlogiciel.projetdevmobile.R
+import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
-import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
+import fr.isen.m1.devlogiciel.projetdevmobile.services.SlopeDatabaseService
 import kotlinx.coroutines.launch
 
 class SlopeDetailsActivity: ComponentActivity() {
@@ -59,145 +60,148 @@ class SlopeDetailsActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Surface {
-                Scaffold (
-                    bottomBar = {
-                        NavBar("Home")
-                    },
-                    topBar = {
-                        Column (
-                            modifier = Modifier.padding(bottom = 5.dp)
-                        ){
-                            Header("Home")
+            ProjetDevMobileTheme {
+                Surface {
+                    Scaffold (
+                        bottomBar = {
+                            NavBar("Home")
+                        },
+                        topBar = {
+                            Column (
+                                modifier = Modifier.padding(bottom = 5.dp)
+                            ){
+                                Header("Home")
+                            }
                         }
-                    }
-                ) { content ->
-                    if(intent.getSerializableExtra("slope") !== null && intent.getSerializableExtra("index") !== null) {
-                        slope = intent.getSerializableExtra("slope") as SlopeModel
-                    } else {
-                        val intent = Intent(this@SlopeDetailsActivity, HomeActivity::class.java)
-                        startActivity(intent)
-                    }
-                    val index = intent.getSerializableExtra("index") as Int
-                    val sheetState = rememberModalBottomSheetState()
-                    var showEditionForm by remember { mutableStateOf(false) }
-                    var showBottomSheet by remember { mutableStateOf(false) }
-                    val comments = remember { mutableStateOf(slope.comments) }
-                    val status = remember { mutableStateOf(slope.status?: false) }
-                    val state = remember { mutableStateOf(slope.state?: SlopeModel.Companion.SlopeStateEnum.UNREPORTED) }
-                    val scope = rememberCoroutineScope()
-                    LazyColumn(
-                        Modifier
-                            .padding(content)
-                            .fillMaxHeight()
-                            .fillMaxWidth()) {
-                        item(slope) {
-                            Box(Modifier.fillMaxWidth()) {
-                                Text(slope.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
-                                IconButton(onClick = {
-                                    showEditionForm = true
-                                    showBottomSheet = true
-                                }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                                    Icon(painter = painterResource(R.drawable.baseline_create_24), contentDescription = "Edit")
+                    ) { paddingValues ->
+                        if(intent.getSerializableExtra("slope") !== null && intent.getSerializableExtra("index") !== null) {
+                            slope = intent.getSerializableExtra("slope") as SlopeModel
+                        } else {
+                            val intent = Intent(this@SlopeDetailsActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                        }
+                        val index = intent.getSerializableExtra("index") as Int
+                        val sheetState = rememberModalBottomSheetState()
+                        var showEditionForm by remember { mutableStateOf(false) }
+                        var showBottomSheet by remember { mutableStateOf(false) }
+                        val comments = remember { mutableStateOf(slope.comments) }
+                        val status = remember { mutableStateOf(slope.status?: false) }
+                        val state = remember { mutableStateOf(slope.state?: SlopeModel.Companion.SlopeStateEnum.UNREPORTED) }
+                        val scope = rememberCoroutineScope()
+                        LazyColumn(
+                            Modifier
+                                .padding(paddingValues)
+                                .fillMaxHeight()
+                                .fillMaxWidth()) {
+                            item(slope) {
+                                Box(Modifier.fillMaxWidth()) {
+                                    Text(slope.name ?: "No name", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
+                                    IconButton(onClick = {
+                                        showEditionForm = true
+                                        showBottomSheet = true
+                                    }, modifier = Modifier.align(Alignment.CenterEnd)) {
+                                        Icon(painter = painterResource(R.drawable.baseline_create_24), contentDescription = "Edit")
+                                    }
+                                }
+                                Row {
+                                    SuggestionChip(
+                                        label = { Text(slope.color?.string.toString()) },
+                                        onClick = { /*TODO*/ },
+                                        modifier = Modifier.padding(10.dp)
+                                    )
+                                    val open = if (status.value) "Open" else "Closed"
+
+                                    SuggestionChip(
+                                        label = { Text(open) },
+                                        onClick = { /*TODO*/ },
+                                        modifier = Modifier.padding(10.dp),
+                                        colors = ChipColors(
+                                            containerColor = if (status.value) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                                            labelColor = if (status.value) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
+                                            leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                            trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                                            disabledLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                            disabledLeadingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                            disabledTrailingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                        )
+
+                                    )
+                                    SuggestionChip(
+                                        label = { Text(state.value.toString()) },
+                                        onClick = { /*TODO*/ },
+                                        modifier = Modifier.padding(10.dp)
+                                    )
+                                }
+                                Box(Modifier.fillMaxWidth()) {
+                                    Text("Comments", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
                                 }
                             }
-                            Row {
-                                SuggestionChip(
-                                    label = { Text(slope.color?.string.toString()) },
-                                    onClick = { /*TODO*/ },
-                                    modifier = Modifier.padding(10.dp)
-                                )
-                                val open = if (status.value) "Open" else "Closed"
-
-                                SuggestionChip(
-                                    label = { Text(open) },
-                                    onClick = { /*TODO*/ },
-                                    modifier = Modifier.padding(10.dp),
-                                    colors = ChipColors(
-                                        containerColor = if (status.value) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                                        labelColor = if (status.value) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
-                                        leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                        trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                                        disabledLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                                        disabledLeadingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                                        disabledTrailingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                                    )
-
-                                )
-                                SuggestionChip(
-                                    label = { Text(state.value.toString()) },
-                                    onClick = { /*TODO*/ },
-                                    modifier = Modifier.padding(10.dp)
-                                )
-                            }
-                            Box(Modifier.fillMaxWidth()) {
-                                Text("Comments", modifier = Modifier.align(Alignment.Center), style = MaterialTheme.typography.titleMedium)
+                            comments.value?.let {comment ->
+                                itemsIndexed(comment) { _, it ->
+                                    ListItem(headlineContent = { Text(text = it.user ?: "Unknown") }, supportingContent = {
+                                        Text(text = it.comment ?: "No comment")
+                                    })
+                                }
                             }
                         }
-                        comments.value?.let {
-                            itemsIndexed(it) { _, it ->
-                                ListItem(headlineContent = { Text(text = it.user ?: "Unknown") }, supportingContent = {
-                                    Text(text = it.comment ?: "No comment")
-                                })
+                        Box(
+                            modifier = Modifier.run { fillMaxSize().padding(20.dp) },
+                        ){
+                            Row(modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = paddingValues.calculateBottomPadding())){
+                                ExtendedFloatingActionButton(onClick = {
+                                    showBottomSheet = true
+                                    showEditionForm = false
+                                },
+                                    icon = {Icon(painter = painterResource(R.drawable.baseline_add_24), contentDescription = "FAB")},
+                                    text = {Text("Add a comment")}
+                                )
                             }
                         }
-                    }
-                    Box(
-                        modifier = Modifier.run { fillMaxSize().padding(20.dp) },
-                    ){
-                        Row(modifier = Modifier.align(Alignment.BottomEnd)){
-                            ExtendedFloatingActionButton(onClick = {
-                                showBottomSheet = true
-                                showEditionForm = false
-                            },
-                                icon = {Icon(painter = painterResource(R.drawable.baseline_add_24), contentDescription = "FAB")},
-                                text = {Text("Add a comment")}
-                            )
-                        }
-                    }
-                    Box(modifier = Modifier
-                        .width(200.dp)
-                        .padding(20.dp)
-                        .background(color = MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center) {
-                        if(showBottomSheet) {
-                            val tmpStatus = remember { mutableStateOf(status.value) }
-                            val tmpState = remember { mutableStateOf(state.value) }
-                            ModalBottomSheet(onDismissRequest = { showBottomSheet = false }, sheetState = sheetState) {
-                                Column(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
-                                ) {
-                                    val ctaLabel = if(showEditionForm) {
-                                        EditionForm(tmpStatus, tmpState)
-                                        "Edit"
-                                    } else {
-                                        CommentForm()
-                                        "Comment"
-                                    }
-                                    Row {
-                                        Button(onClick = {
-                                            if(tmpStatus.value != status.value) {
-                                                status.value = tmpStatus.value
-                                                ConnectionDatabaseSample().sendStatus(status.value, true, index)
+                        Box(modifier = Modifier
+                            .width(200.dp)
+                            .padding(20.dp)
+                            .background(color = MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center) {
+                            if(showBottomSheet) {
+                                val tmpStatus = remember { mutableStateOf(status.value) }
+                                val tmpState = remember { mutableStateOf(state.value) }
+                                ModalBottomSheet(onDismissRequest = { showBottomSheet = false }, sheetState = sheetState) {
+                                    Column(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
+                                    ) {
+                                        /* TODO: Refactor this shit*/
+                                        val ctaLabel = if(showEditionForm) {
+                                            EditionForm(tmpStatus, tmpState)
+                                            "Edit"
+                                        } else {
+                                            CommentForm()
+                                            "Comment"
+                                        }
+                                        Row {
+                                            Button(onClick = {
+                                                if(tmpStatus.value != status.value) {
+                                                    status.value = tmpStatus.value
+                                                    SlopeDatabaseService().sendStatus(status.value, index)
+                                                }
+                                                if(tmpState.value != state.value) {
+                                                    state.value = tmpState.value
+                                                    SlopeDatabaseService().sendState(state.value, index)
+                                                }
+                                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                                    if (!sheetState.isVisible) {
+                                                        showBottomSheet = false
+                                                    }
+                                                } }, modifier = Modifier.padding(end = 10.dp)) {
+                                                Text(text = ctaLabel)
                                             }
-                                            if(tmpState.value != state.value) {
-                                                state.value = tmpState.value
-                                                ConnectionDatabaseSample().sendState(state.value, index)
-                                            }
-                                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                            OutlinedButton(onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion {
                                                 if (!sheetState.isVisible) {
                                                     showBottomSheet = false
                                                 }
-                                            } }, modifier = Modifier.padding(end = 10.dp)) {
-                                            Text(text = ctaLabel)
-                                        }
-                                        OutlinedButton(onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                            if (!sheetState.isVisible) {
-                                                showBottomSheet = false
+                                            } }) {
+                                                Text(text = "Cancel")
                                             }
-                                        } }) {
-                                            Text(text = "Cancel")
                                         }
                                     }
                                 }
@@ -241,7 +245,7 @@ class SlopeDetailsActivity: ComponentActivity() {
     }
 
     @Composable
-    private fun CommentForm () {
+    private fun CommentForm() {
         var text by remember { mutableStateOf("") }
         Text("Add a comment", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
         TextField(value = text, onValueChange = {text = it}, minLines = 3, modifier = Modifier.fillMaxWidth())
