@@ -79,7 +79,6 @@ class AuthenticationActivity : ComponentActivity() {
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
-
                 }
             }
     }
