@@ -6,7 +6,8 @@ data class SlopeModel (
     val name: String? = null,
     val color: SlopeColorEnum? = null,
     val state: SlopeStateEnum? = null,
-    val status: Boolean? = null
+    val status: Boolean? = null,
+    var comments: List<CommentModel>? = null
 ): Serializable {
     companion object {
         enum class SlopeColorEnum (val string: String){

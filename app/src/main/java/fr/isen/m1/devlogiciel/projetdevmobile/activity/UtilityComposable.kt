@@ -106,7 +106,7 @@ fun SearchBar(onSearchTextChanged: (String) -> Unit) {
 @Composable
 fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    var text by remember {  mutableStateOf("Tous")  }
+    var text by remember {  mutableStateOf("All")  }
     Row (
         modifier = Modifier.padding(top = 5.dp)
     ){
@@ -137,24 +137,24 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
                     modifier = Modifier.weight(0.5f)
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = "Tous") },
+                        text = { Text(text = "All") },
                         onClick = {
                             onStateChange(null)
-                            text = "Tous"
+                            text = "All"
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Ouverte") },
+                        text = { Text(text = "Open") },
                         onClick = {
                             onStateChange(true)
-                            text = "Ouverte"
+                            text = "Open"
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Fermée") },
+                        text = { Text(text = "Closed") },
                         onClick = {
                             onStateChange(false)
-                            text = "Fermée"
+                            text = "Closed"
                         }
                     )
                 }
@@ -166,11 +166,11 @@ fun FilterStatus(onStateChange: (Boolean?) -> Unit) {
 @Composable
 fun FilterColor(onStateChange: (SlopeModel.Companion.SlopeColorEnum?) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    var text by remember {  mutableStateOf("Tous")  }
+    var text by remember {  mutableStateOf("All")  }
     Row (
         modifier = Modifier.padding(top = 5.dp)
     ){
-        Text(text = "Couleur de la piste :",
+        Text(text = "Color of the slope :",
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .padding(start = 20.dp)
@@ -197,38 +197,38 @@ fun FilterColor(onStateChange: (SlopeModel.Companion.SlopeColorEnum?) -> Unit) {
                     modifier = Modifier.weight(0.5f)
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = "Tous") },
+                        text = { Text(text = "All") },
                         onClick = {
                             onStateChange(null)
-                            text = "Tous"
+                            text = "All"
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Bleu") },
+                        text = { Text(text = SlopeModel.Companion.SlopeColorEnum.BLUE.string) },
                         onClick = {
                             onStateChange(SlopeModel.Companion.SlopeColorEnum.BLUE)
-                            text = "Bleu"
+                            text = SlopeModel.Companion.SlopeColorEnum.BLUE.string
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Verte") },
+                        text = { Text(text = SlopeModel.Companion.SlopeColorEnum.GREEN.string) },
                         onClick = {
                             onStateChange(SlopeModel.Companion.SlopeColorEnum.GREEN)
-                            text = "Verte"
+                            text = SlopeModel.Companion.SlopeColorEnum.GREEN.string
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Rouge") },
+                        text = { Text(text = SlopeModel.Companion.SlopeColorEnum.RED.string) },
                         onClick = {
                             onStateChange(SlopeModel.Companion.SlopeColorEnum.RED)
-                            text = "Rouge"
+                            text = SlopeModel.Companion.SlopeColorEnum.RED.string
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Noire") },
+                        text = { Text(text = SlopeModel.Companion.SlopeColorEnum.BLACK.string) },
                         onClick = {
                             onStateChange(SlopeModel.Companion.SlopeColorEnum.BLACK)
-                            text = "Noire"
+                            text = SlopeModel.Companion.SlopeColorEnum.BLACK.string
                         }
                     )
                 }
@@ -242,7 +242,7 @@ fun NavBar(activity: String) {
 
     val selectedActivity: ButtonNav = when(activity) {
         "Home" -> ButtonNav.Home
-        "Itinéraires" -> ButtonNav.Itinerary
+        "Tracks" -> ButtonNav.Itinerary
         "Chat" -> ButtonNav.Chat
         else -> {
             ButtonNav.Home
@@ -277,7 +277,7 @@ sealed class ButtonNav(var title: String, var icon: Int, var activity: Class<*>)
 
     data object Itinerary :
         ButtonNav(
-            "Itinéraires",
+            "Tracks",
             R.drawable.baseline_error_24,
             HomeActivity::class.java
         )
@@ -315,13 +315,20 @@ fun RowScope.AddItem(button: ButtonNav, isSelected: Boolean) {
 }
 
 @Composable
-fun CardSlope(slope : SlopeModel, color: Color) {
+fun CardSlope(slope : SlopeModel, color: Color, index: Int) {
+    val context = LocalContext.current
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(50.dp)
             .padding(2.dp),
+        onClick = {
+            val intent = Intent(context, SlopeDetailsActivity::class.java)
+            intent.putExtra("slope", slope)
+            intent.putExtra("index", index)
+            context.startActivity(intent)
+        }
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -353,7 +360,7 @@ fun CardSlope(slope : SlopeModel, color: Color) {
                             .padding(10.dp)
                             .fillMaxWidth(0.85f)
                     ) {
-                        Text(text = "Ouverte", color = Color.White)
+                        Text(text = "Open", color = Color.White)
                     }
                 } else {
                     Box(
@@ -362,7 +369,7 @@ fun CardSlope(slope : SlopeModel, color: Color) {
                             .padding(10.dp)
                             .fillMaxWidth(0.85f)
                     ) {
-                        Text(text = "Fermée", color = Color.White)
+                        Text(text = "Closed", color = Color.White)
                     }
                 }
             }
@@ -371,13 +378,20 @@ fun CardSlope(slope : SlopeModel, color: Color) {
 }
 
 @Composable
-fun CardMountain(mountain : MountainModel, icon: Int) {
+fun CardMountain(mountain : MountainModel, icon: Int, index: Int) {
+    val context = LocalContext.current
     OutlinedCard(
         border = BorderStroke(1.dp, Color.Gray),
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(50.dp)
             .padding(2.dp),
+        onClick = {
+            val intent = Intent(context, MountainDetailsActivity::class.java)
+            intent.putExtra("mountain", mountain)
+            intent.putExtra("index", index)
+            context.startActivity(intent)
+        }
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -402,7 +416,7 @@ fun CardMountain(mountain : MountainModel, icon: Int) {
                             .padding(10.dp)
                             .fillMaxWidth(0.85f)
                     ) {
-                        Text(text = "Ouvert", color = Color.White)
+                        Text(text = "Open", color = Color.White)
                     }
                 } else {
                     Box(
@@ -411,7 +425,7 @@ fun CardMountain(mountain : MountainModel, icon: Int) {
                             .padding(10.dp)
                             .fillMaxWidth(0.85f)
                     ) {
-                        Text(text = "Fermé", color = Color.White)
+                        Text(text = "Closed", color = Color.White)
                     }
                 }
             }
