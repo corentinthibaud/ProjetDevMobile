@@ -35,7 +35,8 @@ import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainsModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopeModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.SlopesModel
-import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
+import fr.isen.m1.devlogiciel.projetdevmobile.services.MountainDatabaseService
+import fr.isen.m1.devlogiciel.projetdevmobile.services.SlopeDatabaseService
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,11 +49,11 @@ class HomeActivity : ComponentActivity() {
             val colorFilter = remember { mutableStateOf<SlopeModel.Companion.SlopeColorEnum?>(null) }
             val mountainsModel = remember { mutableStateOf<MountainsModel?>(null) }
             LaunchedEffect(Unit) {
-                ConnectionDatabaseSample().getSlopes().observe(this@HomeActivity) { data ->
+                SlopeDatabaseService().getSlopes().observe(this@HomeActivity) { data ->
                     slopesModel.value = data
                     isLoading.value = false
                 }
-                ConnectionDatabaseSample().getMountains().observe(this@HomeActivity) { data ->
+                MountainDatabaseService().getMountains().observe(this@HomeActivity) { data ->
                     mountainsModel.value = data
                     isLoading.value = false
                 }
