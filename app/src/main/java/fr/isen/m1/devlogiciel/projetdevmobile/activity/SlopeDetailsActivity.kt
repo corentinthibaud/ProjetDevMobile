@@ -233,17 +233,15 @@ class SlopeDetailsActivity: ComponentActivity() {
         Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 40.dp)) {
             Text(text = "State", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
             Box {
-                tmpState.value.let {
-                    TextField(value = it.string, onValueChange = {}, readOnly = true, trailingIcon = {
-                        IconButton(onClick = { dropdownExpanded = true }) {
-                            if(dropdownExpanded) {
-                                Icon(painter = painterResource(id = R.drawable.baseline_arrow_drop_up_24), contentDescription = "Close dropdown")
-                            } else {
-                                Icon(painter = painterResource(R.drawable.baseline_arrow_drop_down_24), contentDescription = "Dropdown")
-                            }
+                TextField(value = tmpState.value.string, onValueChange = {}, readOnly = true, trailingIcon = {
+                    IconButton(onClick = { dropdownExpanded = true }) {
+                        if(dropdownExpanded) {
+                            Icon(painter = painterResource(id = R.drawable.baseline_arrow_drop_up_24), contentDescription = "Close dropdown")
+                        } else {
+                            Icon(painter = painterResource(R.drawable.baseline_arrow_drop_down_24), contentDescription = "Dropdown")
                         }
-                    }, modifier = Modifier.clickable(onClick = { dropdownExpanded = true }))
-                }
+                    }
+                }, modifier = Modifier.clickable(onClick = { dropdownExpanded = true }))
                 DropdownMenu(
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false }) {
