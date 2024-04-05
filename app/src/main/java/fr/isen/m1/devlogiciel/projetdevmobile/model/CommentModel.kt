@@ -4,5 +4,5 @@ import java.io.Serializable
 
 data class CommentModel (
     val user: String? = null,
-    val comment: String? = null,
+    val message: String? = null,
 ): Serializable

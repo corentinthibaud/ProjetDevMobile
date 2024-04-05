@@ -2,6 +2,7 @@ package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -9,13 +10,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,184 +45,169 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
 import fr.isen.m1.devlogiciel.projetdevmobile.R
+import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
-import fr.isen.m1.devlogiciel.projetdevmobile.samples.ConnectionDatabaseSample
+import fr.isen.m1.devlogiciel.projetdevmobile.services.MountainDatabaseService
 import kotlinx.coroutines.launch
 
 class MountainDetailsActivity: ComponentActivity() {
-    private lateinit var mountain : MountainModel
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            if (intent.getSerializableExtra("mountain") !== null && intent.getSerializableExtra("index") !== null) {
-                mountain = intent.getSerializableExtra("mountain") as MountainModel
-            } else {
+            if (intent.getSerializableExtra("mountain") === null || intent.getSerializableExtra("index") === null) {
                 val intent = Intent(this@MountainDetailsActivity, HomeActivity::class.java)
                 startActivity(intent)
             }
             val index = intent.getSerializableExtra("index") as Int
-            Surface {
-                Scaffold(
-                    bottomBar = {
-                        NavBar("Home")
-                    },
-                    topBar = {
-                        Column(
-                            modifier = Modifier.padding(bottom = 5.dp)
-                        ) {
-                            Header("Home")
+            ProjetDevMobileTheme {
+                Surface {
+                    Scaffold(
+                        bottomBar = {
+                            NavBar("Home")
+                        },
+                        topBar = {
+                            Column(
+                                modifier = Modifier.padding(bottom = 5.dp)
+                            ) {
+                                Header("Home")
+                            }
                         }
-                    }
-                ) { content ->
-                    val sheetState = rememberModalBottomSheetState()
-                    var showEditionForm by remember { mutableStateOf(false) }
-                    var showBottomSheet by remember { mutableStateOf(false) }
-                    val status = remember { mutableStateOf(mountain.status ?: false) }
-                    val comments = remember { mutableStateOf(mountain.comments) }
-                    val scope = rememberCoroutineScope()
-                    LazyColumn(
-                        Modifier
-                            .padding(content)
-                            .fillMaxHeight()
-                            .fillMaxWidth()
-                    ) {
-                        item(mountain) {
-                            Box(Modifier.fillMaxWidth()) {
-                                Text(
-                                    mountain.name ?: "No name",
-                                    modifier = Modifier.align(Alignment.Center),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                IconButton(onClick = {
-                                    showEditionForm = true
-                                    showBottomSheet = true
-                                }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.baseline_create_24),
-                                        contentDescription = "Edit"
+                    ) { paddingValues ->
+                        val mountainModel = remember { mutableStateOf<MountainModel?>(null) }
+                        val sheetState = rememberModalBottomSheetState()
+                        var showEditionForm by remember { mutableStateOf(false) }
+                        val showBottomSheet = remember { mutableStateOf(false) }
+                        LaunchedEffect(Unit) {
+                            MountainDatabaseService().getMountain(intent.getSerializableExtra("index") as Int)
+                                .observe(this@MountainDetailsActivity) { data ->
+                                    mountainModel.value = data
+                                    Log.i("Data", "Mountain: " + mountainModel.value)
+                                }
+                        }
+                        LazyColumn {
+                            item {
+                                Box(Modifier
+                                    .padding(top = paddingValues.calculateTopPadding())
+                                    .fillMaxWidth()) {
+                                    Text(
+                                        mountainModel.value?.name ?: "No name",
+                                        modifier = Modifier.align(Alignment.Center),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    IconButton(onClick = {
+                                        showEditionForm = true
+                                        showBottomSheet.value = true
+                                    }, modifier = Modifier.align(Alignment.CenterEnd)) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.baseline_create_24),
+                                            contentDescription = "Edit"
+                                        )
+                                    }
+                                }
+                                Row {
+                                    val open = if (mountainModel.value?.status == true) "Open" else "Closed"
+
+                                    SuggestionChip(
+                                        label = { Text(open) },
+                                        onClick = {  },
+                                        modifier = Modifier.padding(10.dp),
+                                        colors = ChipColors(
+                                            containerColor = if (mountainModel.value?.status == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                                            labelColor = if (mountainModel.value?.status == true) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
+                                            leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                            trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.12f
+                                            ),
+                                            disabledLabelColor = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.38f
+                                            ),
+                                            disabledLeadingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.38f
+                                            ),
+                                            disabledTrailingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.38f
+                                            ),
+                                        )
+
+                                    )
+                                    SuggestionChip(
+                                        label = { Text(mountainModel.value?.type?.string.toString()) },
+                                        onClick = {  },
+                                        modifier = Modifier.padding(10.dp)
                                     )
                                 }
-                            }
-                            Row {
-                                val open = if (status.value) "Open" else "Closed"
-
-                                SuggestionChip(
-                                    label = { Text(open) },
-                                    onClick = { /*TODO*/ },
-                                    modifier = Modifier.padding(10.dp),
-                                    colors = ChipColors(
-                                        containerColor = if (status.value) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                                        labelColor = if (status.value) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer,
-                                        leadingIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                        trailingIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(
-                                            alpha = 0.12f
-                                        ),
-                                        disabledLabelColor = MaterialTheme.colorScheme.onSurface.copy(
-                                            alpha = 0.38f
-                                        ),
-                                        disabledLeadingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(
-                                            alpha = 0.38f
-                                        ),
-                                        disabledTrailingIconContentColor = MaterialTheme.colorScheme.onSurface.copy(
-                                            alpha = 0.38f
-                                        ),
+                                Box(Modifier.fillMaxWidth()) {
+                                    Text(
+                                        "Comments",
+                                        modifier = Modifier.align(Alignment.Center),
+                                        style = MaterialTheme.typography.titleMedium
                                     )
-
-                                )
-                                SuggestionChip(
-                                    label = { Text(mountain.type?.string.toString()) },
-                                    onClick = { /*TODO*/ },
-                                    modifier = Modifier.padding(10.dp)
-                                )
-                            }
-                            Box(Modifier.fillMaxWidth()) {
-                                Text(
-                                    "Comments",
-                                    modifier = Modifier.align(Alignment.Center),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
-                        }
-                        comments.value?.let {
-                            itemsIndexed(it) { _, it ->
-                                ListItem(headlineContent = { Text(text = it.user ?: "Unknown") }, supportingContent = {
-                                    Text(text = it.comment ?: "No comment")
-                                })
-                            }
-                        }
-                    }
-                    Box(
-                        modifier = Modifier.run { fillMaxSize().padding(20.dp) },
-                    ) {
-                        Row(modifier = Modifier.align(Alignment.BottomEnd)) {
-                            ExtendedFloatingActionButton(onClick = {
-                                showBottomSheet = true
-                                showEditionForm = false
-                            },
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.baseline_add_24),
-                                        contentDescription = "FAB"
-                                    )
-                                },
-                                text = { Text("Add a comment") }
-                            )
-                        }
-                    }
-                    Box(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(20.dp)
-                            .background(color = MaterialTheme.colorScheme.background),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (showBottomSheet) {
-                            val tmpStatus = remember { mutableStateOf(status.value) }
-                            ModalBottomSheet(
-                                onDismissRequest = { showBottomSheet = false },
-                                sheetState = sheetState
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
-                                ) {
-                                    val ctaLabel = if (showEditionForm) {
-                                        EditionForm(tmpStatus)
-                                        "Edit"
-                                    } else {
-                                        CommentForm()
-                                        "Comment"
-                                    }
-                                    Row {
-                                        Button(onClick = {
-                                            if (tmpStatus.value != status.value) {
-                                                status.value = tmpStatus.value
-                                                ConnectionDatabaseSample().sendStatus(
-                                                    status.value,
-                                                    false,
-                                                    index
-                                                )
-                                            }
-                                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                                if (!sheetState.isVisible) {
-                                                    showBottomSheet = false
+                                }
+                                Box(Modifier.fillMaxWidth()) {
+                                    var i = 0
+                                    mountainModel.value?.comments?.let {
+                                        it.forEach { comment ->
+                                            ListItem(
+                                                modifier = Modifier.padding(top = (72 * i).dp),
+                                                headlineContent = {
+                                                    Text(
+                                                        text = comment.user ?: "Unknown"
+                                                    )
+                                                }, supportingContent = {
+                                                    Text(text = comment.message ?: "No comment")
                                                 }
-                                            }
-                                        }, modifier = Modifier.padding(end = 10.dp)) {
-                                            Text(text = ctaLabel)
+                                            )
+                                            i++
                                         }
-                                        OutlinedButton(onClick = {
-                                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                                if (!sheetState.isVisible) {
-                                                    showBottomSheet = false
-                                                }
-                                            }
-                                        }) {
-                                            Text(text = "Cancel")
+                                    }
+                                }
+                            }
+                        }
+                        Box(
+                            modifier = Modifier.run { fillMaxSize().padding(20.dp) },
+                        ) {
+                            Row(modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(bottom = paddingValues.calculateBottomPadding())) {
+                                ExtendedFloatingActionButton(onClick = {
+                                    showBottomSheet.value = true
+                                    showEditionForm = false
+                                },
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.baseline_add_24),
+                                            contentDescription = "FAB"
+                                        )
+                                    },
+                                    text = { Text("Add a comment") }
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .padding(20.dp)
+                                .background(color = MaterialTheme.colorScheme.background),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (showBottomSheet.value) {
+                                ModalBottomSheet(
+                                    onDismissRequest = { showBottomSheet.value = false },
+                                    sheetState = sheetState
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
+                                    ) {
+                                        if (showEditionForm) {
+                                            mountainModel.value?.status?.let{ it -> EditionForm(it, index, sheetState, showBottomSheet) }
+                                        } else {
+                                            CommentForm(index, mountainModel.value?.comments?.size ?: 0, sheetState, showBottomSheet)
                                         }
                                     }
                                 }
@@ -233,19 +219,76 @@ class MountainDetailsActivity: ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun EditionForm(status: MutableState<Boolean>) {
+    private fun EditionForm(status: Boolean, index: Int, sheetState: SheetState, showBottomSheet: MutableState<Boolean>) {
+        val scope = rememberCoroutineScope()
+        val tmpStatus = remember { mutableStateOf(status) }
         Text("Edition form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Status", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 10.dp))
-            Switch(checked = status.value, onCheckedChange = {status.value = it} )
+            Switch(checked = status, onCheckedChange = {tmpStatus.value = it} )
+        }
+        Row {
+            Button(onClick = {
+                if (tmpStatus.value != status) {
+                    MountainDatabaseService().sendStatus(
+                        tmpStatus.value,
+                        index
+                    )
+                }
+                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        showBottomSheet.value = false
+                    }
+                }
+            }, modifier = Modifier.padding(end = 10.dp)) {
+                Text(text = "Edit")
+            }
+            OutlinedButton(onClick = {
+                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        showBottomSheet.value = false
+                    }
+                }
+            }) {
+                Text(text = "Cancel")
+            }
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun CommentForm () {
+    private fun CommentForm(index: Int, commentSize: Int, sheetState: SheetState, showBottomSheet: MutableState<Boolean>) {
         var text by remember { mutableStateOf("") }
+        val scope = rememberCoroutineScope()
         Text("Add a comment", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
         TextField(value = text, onValueChange = {text = it}, minLines = 3, modifier = Modifier.fillMaxWidth())
+        Row {
+            Button(onClick = {
+                MountainDatabaseService().sendComments(
+                    FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
+                    text,
+                    index,
+                    commentSize
+                )
+                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        showBottomSheet.value = false
+                    }
+                }
+            }, modifier = Modifier.padding(end = 10.dp)) {
+                Text(text = "Comment")
+            }
+            OutlinedButton(onClick = {
+                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        showBottomSheet.value = false
+                    }
+                }
+            }) {
+                Text(text = "Cancel")
+            }
+        }
     }
 }

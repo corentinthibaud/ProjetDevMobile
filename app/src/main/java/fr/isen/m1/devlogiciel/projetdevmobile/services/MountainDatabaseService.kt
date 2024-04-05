@@ -6,6 +6,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import fr.isen.m1.devlogiciel.projetdevmobile.model.ChatModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainModel
 import fr.isen.m1.devlogiciel.projetdevmobile.model.MountainsModel
 
@@ -39,5 +40,37 @@ class MountainDatabaseService {
                 mountainsReference.removeEventListener(listener)
             }
         }
+    }
+
+    fun getMountain(index: Int): LiveData<MountainModel> {
+        return object : LiveData<MountainModel>() {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    value = snapshot.children.elementAt(index).getValue(MountainModel::class.java)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("MountainDatabaseService", "Error getting data", error.toException())
+                }
+            }
+
+            override fun onActive() {
+                mountainsReference.addValueEventListener(listener)
+            }
+
+            override fun onInactive() {
+                mountainsReference.removeEventListener(listener)
+            }
+        }
+    }
+
+    fun sendStatus(status: Boolean, index: Int) {
+        val ref = database.getReference("remontee/$index/status")
+        ref.setValue(status)
+    }
+
+    fun sendComments(username: String, message: String, index: Int, id: Int) {
+        val ref = database.getReference("remontee/$index/comments/$id")
+        ref.setValue(ChatModel(username, message))
     }
 }
