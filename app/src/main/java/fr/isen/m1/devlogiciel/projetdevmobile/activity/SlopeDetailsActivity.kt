@@ -183,7 +183,9 @@ class SlopeDetailsActivity: ComponentActivity() {
                         Box(
                             modifier = Modifier.run { fillMaxSize().padding(20.dp) },
                         ){
-                            Row(modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = paddingValues.calculateBottomPadding())){
+                            Row(modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(bottom = paddingValues.calculateBottomPadding())){
                                 ExtendedFloatingActionButton(onClick = {
                                     showBottomSheet.value = true
                                     showEditionForm = false
@@ -246,7 +248,7 @@ class SlopeDetailsActivity: ComponentActivity() {
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false }) {
                     SlopeModel.Companion.SlopeStateEnum.entries.forEach {
-                        DropdownMenuItem (text = { it.string }, onClick = { tmpState.value = it; dropdownExpanded = false})
+                        DropdownMenuItem (text = { Text(text = it.string) }, onClick = { tmpState.value = it; dropdownExpanded = false})
                     }
                 }
             }
