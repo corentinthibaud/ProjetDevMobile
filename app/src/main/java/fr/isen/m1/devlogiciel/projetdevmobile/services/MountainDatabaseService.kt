@@ -42,6 +42,28 @@ class MountainDatabaseService {
         }
     }
 
+    fun getMountain(index: Int): LiveData<MountainModel> {
+        return object : LiveData<MountainModel>() {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    value = snapshot.children.elementAt(index).getValue(MountainModel::class.java)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("MountainDatabaseService", "Error getting data", error.toException())
+                }
+            }
+
+            override fun onActive() {
+                mountainsReference.addValueEventListener(listener)
+            }
+
+            override fun onInactive() {
+                mountainsReference.removeEventListener(listener)
+            }
+        }
+    }
+
     fun sendStatus(status: Boolean, index: Int) {
         val ref = database.getReference("remontee/$index/status")
         ref.setValue(status)

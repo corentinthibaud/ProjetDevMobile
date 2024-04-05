@@ -42,6 +42,28 @@ class SlopeDatabaseService {
         }
     }
 
+    fun getSlope(index: Int): LiveData<SlopeModel> {
+        return object : LiveData<SlopeModel>() {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    value = snapshot.children.elementAt(index).getValue(SlopeModel::class.java)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("MountainDatabaseService", "Error getting data", error.toException())
+                }
+            }
+
+            override fun onActive() {
+                slopesReference.addValueEventListener(listener)
+            }
+
+            override fun onInactive() {
+                slopesReference.removeEventListener(listener)
+            }
+        }
+    }
+
     fun sendStatus(status: Boolean, index: Int) {
         val ref = database.getReference("piste/$index/status")
         ref.setValue(status)
