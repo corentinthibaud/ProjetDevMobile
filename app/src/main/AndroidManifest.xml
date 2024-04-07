@@ -15,15 +15,20 @@
         android:theme="@style/Theme.ProjetDevMobile"
         tools:targetApi="31">
         <activity
-            android:name=".activity.AuthenticationActivity"
+            android:name=".activity.LaunchActivity"
             android:exported="true"
-            android:label="@string/title_activity_authentication"
+            android:label="@string/title_activity_launch"
             android:theme="@style/Theme.ProjetDevMobile">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_authentication"
+            android:theme="@style/Theme.ProjetDevMobile"/>
         <activity
             android:name=".activity.HomeActivity"
             android:exported="false"
@@ -43,6 +48,11 @@
             android:name=".activity.ChatActivity"
             android:exported="false"
             android:label="@string/title_activity_chat"
+            android:theme="@style/Theme.ProjetDevMobile"/>
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:exported="false"
+            android:label="@string/title_activity_profile"
             android:theme="@style/Theme.ProjetDevMobile"/>
     </application>
 

@@ -244,6 +244,7 @@ fun NavBar(activity: String) {
         "Home" -> ButtonNav.Home
         "Tracks" -> ButtonNav.Itinerary
         "Chat" -> ButtonNav.Chat
+        "Profile" -> ButtonNav.Profile
         else -> {
             ButtonNav.Home
         }
@@ -252,7 +253,8 @@ fun NavBar(activity: String) {
     val items = listOf(
         ButtonNav.Home,
         ButtonNav.Itinerary,
-        ButtonNav.Chat
+        ButtonNav.Chat,
+        ButtonNav.Profile
     )
 
     NavigationBar (
@@ -287,6 +289,13 @@ sealed class ButtonNav(var title: String, var icon: Int, var activity: Class<*>)
             "Chat",
             R.drawable.baseline_chat_24,
             ChatActivity::class.java
+        )
+
+    data object Profile:
+        ButtonNav(
+            "Profile",
+            R.drawable.baseline_account_circle_24,
+            ProfileActivity::class.java
         )
 }
 

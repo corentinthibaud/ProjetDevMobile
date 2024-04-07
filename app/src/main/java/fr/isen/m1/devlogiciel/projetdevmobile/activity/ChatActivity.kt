@@ -1,6 +1,5 @@
 package fr.isen.m1.devlogiciel.projetdevmobile.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import fr.isen.m1.devlogiciel.projetdevmobile.R
@@ -51,7 +47,6 @@ class ChatActivity: ComponentActivity() {
     private lateinit var authFirebase: FirebaseAuth
     private lateinit var username: String
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         authFirebase = Firebase.auth
@@ -60,8 +55,6 @@ class ChatActivity: ComponentActivity() {
             val intent = Intent(this, AuthenticationActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
-            finish()
-            return
         }
 
         setContent {
@@ -187,42 +180,13 @@ class ChatActivity: ComponentActivity() {
 
     @Composable
     private fun SetUsername(paddingValues: PaddingValues) {
-        var username by remember{mutableStateOf("")}
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(top = paddingValues.calculateTopPadding())) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth())
-            {
-                Text(
-                    text = "Welcome on the chat !",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(top = 16.dp))
-            }
-            Text(
-                text = "To be able to use this functionality, you first need to define a username." +
-                        "Choose one wisely so your friends can identify you !",
-                modifier = Modifier.padding(16.dp, 20.dp, 16.dp))
-            TextField(
-                value = username,
-                onValueChange = {username = it},
-                label = { Text("Username") },
-                modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 10.dp))
-            Button(onClick = {
-                authFirebase.currentUser?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
-                val intent = Intent(this@ChatActivity, ChatActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
-            },modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 20.dp, 16.dp)) {
-                Text("Set Username")
-            }
+        Text("Just one last thing", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = paddingValues.calculateTopPadding(), bottom = 20.dp))
+        Text("To use this functionality, you must set a username. Please go to the profile page to set it up first")
+        Button(onClick = {
+            val intent = Intent(this@ChatActivity, ProfileActivity::class.java)
+            startActivity(intent)
+        }) {
+            Text(text = "Go to profile")
         }
     }
 }
