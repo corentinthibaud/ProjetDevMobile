@@ -31,7 +31,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import fr.isen.m1.devlogiciel.projetdevmobile.activity.ui.theme.ProjetDevMobileTheme
 
@@ -40,9 +39,6 @@ class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         authFirebase = Firebase.auth
-        FirebaseDatabase.getInstance().apply {
-            setPersistenceEnabled(true)
-        }
     }
 
     override fun onStart() {
@@ -84,20 +80,16 @@ class AuthenticationActivity : ComponentActivity() {
     }
 
     private fun signIn(email: String, password: String) {
-        // [START sign_in_with_email]
         authFirebase.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     Toast.makeText(this, "Sign In Successful", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
-                    // If sign in fails, display a message to the user.
                 }
             }
-        // [END sign_in_with_email]
     }
 
     @Composable
@@ -154,7 +146,7 @@ class AuthenticationActivity : ComponentActivity() {
                 .fillMaxWidth()
                 .padding(16.dp, 10.dp))
             Button(onClick = {
-                if(password.equals(passwordConfirmation)) {
+                if(password == passwordConfirmation) {
                     signUp(email, password)
                 }
                 else {

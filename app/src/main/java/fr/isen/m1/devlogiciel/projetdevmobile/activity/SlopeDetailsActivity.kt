@@ -283,29 +283,40 @@ class SlopeDetailsActivity: ComponentActivity() {
     private fun CommentForm(index: Int, size: Int, sheetState: SheetState, showBottomSheet: MutableState<Boolean>) {
         val scope = rememberCoroutineScope()
         var text by remember { mutableStateOf("") }
-        Text("Add a comment", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
-        TextField(value = text, onValueChange = {text = it}, minLines = 3, modifier = Modifier.fillMaxWidth())
-        Row {
+        if(FirebaseAuth.getInstance().currentUser?.displayName?.isEmpty() == true) {
+            Text("Just one last thing", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
+            Text("To use this functionality, you must set a username. Please go to the profile page to set it up first")
             Button(onClick = {
-                SlopeDatabaseService().sendComments(
-                    FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
-                    text,
-                    index,
-                    size
-                )
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                val intent = Intent(this@SlopeDetailsActivity, ProfileActivity::class.java)
+                startActivity(intent)
+            }) {
+                Text(text = "Go to profile")
+            }
+        } else {
+            Text("Add a comment", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 20.dp))
+            TextField(value = text, onValueChange = {text = it}, minLines = 3, modifier = Modifier.fillMaxWidth())
+            Row {
+                Button(onClick = {
+                    SlopeDatabaseService().sendComments(
+                        FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
+                        text,
+                        index,
+                        size
+                    )
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet.value = false
+                        }
+                    } }, modifier = Modifier.padding(end = 10.dp)) {
+                    Text(text = "Comment")
+                }
+                OutlinedButton(onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion {
                     if (!sheetState.isVisible) {
                         showBottomSheet.value = false
                     }
-                } }, modifier = Modifier.padding(end = 10.dp)) {
-                Text(text = "Comment")
-            }
-            OutlinedButton(onClick = { scope.launch { sheetState.hide() }.invokeOnCompletion {
-                if (!sheetState.isVisible) {
-                    showBottomSheet.value = false
+                } }) {
+                    Text(text = "Cancel")
                 }
-            } }) {
-                Text(text = "Cancel")
             }
         }
     }
