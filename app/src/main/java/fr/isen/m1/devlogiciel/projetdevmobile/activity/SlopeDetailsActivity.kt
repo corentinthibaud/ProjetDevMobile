@@ -148,7 +148,7 @@ class SlopeDetailsActivity: ComponentActivity() {
 
                                     )
                                     SuggestionChip(
-                                        label = { Text(slopeModel.value?.state.toString()) },
+                                        label = { Text(slopeModel.value?.state?.string ?: SlopeModel.Companion.SlopeStateEnum.UNREPORTED.string) },
                                         onClick = { /*TODO*/ },
                                         modifier = Modifier.padding(10.dp)
                                     )

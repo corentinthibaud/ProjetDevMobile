@@ -8,8 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -180,13 +182,31 @@ class ChatActivity: ComponentActivity() {
 
     @Composable
     private fun SetUsername(paddingValues: PaddingValues) {
-        Text("Just one last thing", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = paddingValues.calculateTopPadding(), bottom = 20.dp))
-        Text("To use this functionality, you must set a username. Please go to the profile page to set it up first")
-        Button(onClick = {
-            val intent = Intent(this@ChatActivity, ProfileActivity::class.java)
-            startActivity(intent)
-        }) {
-            Text(text = "Go to profile")
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(top = paddingValues.calculateTopPadding())) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth())
+            {
+                Text(
+                    text = "Welcome on the chat !",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(top = 16.dp))
+            }
+            Text(
+                text = "To use this functionality, you must set a username. Please go to the profile page to set it up first",
+                modifier = Modifier.padding(16.dp, 20.dp, 16.dp, 20.dp))
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                val intent = Intent(this@ChatActivity, ProfileActivity::class.java)
+                startActivity(intent)
+            }) {
+                Text(text = "Go to profile")
+            }
         }
     }
 }
