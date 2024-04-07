@@ -46,7 +46,6 @@ class HomeActivity : ComponentActivity() {
             var selectedTabIndex by remember { mutableIntStateOf(0) }
             val slopesModel = remember { mutableStateOf<SlopesModel?>(null) }
             val statusFilter = remember { mutableStateOf<Boolean?>(null) }
-            val isLoading = remember { mutableStateOf(true) }
             val colorFilter = remember { mutableStateOf<SlopeModel.Companion.SlopeColorEnum?>(null) }
             val mountainsModel = remember { mutableStateOf<MountainsModel?>(null) }
             LaunchedEffect(Unit) {
@@ -58,7 +57,6 @@ class HomeActivity : ComponentActivity() {
                     mountainsModel.value = data
                     Log.i("Data", "Mountains: " + mountainsModel.value)
                 }
-                isLoading.value = false
             }
             ProjetDevMobileTheme {
                 // A surface container using the 'background' color from the theme
@@ -98,7 +96,7 @@ class HomeActivity : ComponentActivity() {
                             }
                         }
                     ) { content ->
-                        if (isLoading.value || (slopesModel.value == null && mountainsModel.value == null)) {
+                        if (slopesModel.value == null || mountainsModel.value == null) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
@@ -206,9 +204,5 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 }
