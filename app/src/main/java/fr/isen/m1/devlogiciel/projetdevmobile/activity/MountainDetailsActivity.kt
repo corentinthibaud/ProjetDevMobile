@@ -151,17 +151,19 @@ class MountainDetailsActivity: ComponentActivity() {
                                     var i = 0
                                     mountainModel.value?.comments?.let {
                                         it.forEach { comment ->
-                                            ListItem(
-                                                modifier = Modifier.padding(top = (72 * i).dp),
-                                                headlineContent = {
-                                                    Text(
-                                                        text = comment.user ?: "Unknown"
-                                                    )
-                                                }, supportingContent = {
-                                                    Text(text = comment.message ?: "No comment")
-                                                }
-                                            )
-                                            i++
+                                            if(comment.user != null && comment.message != null) {
+                                                ListItem(
+                                                    modifier = Modifier.padding(top = (72 * i).dp),
+                                                    headlineContent = {
+                                                        Text(
+                                                            text = comment.user
+                                                        )
+                                                    }, supportingContent = {
+                                                        Text(text = comment.message)
+                                                    }
+                                                )
+                                                i++
+                                            }
                                         }
                                     }
                                 }
